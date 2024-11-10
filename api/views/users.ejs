@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Users List</title>
+    <link rel="stylesheet" href="/stylesheets/form_style.css" />
+  </head>
+  <body>
+    <h1>Users List</h1>
+
+    <div class="button-container">
+      <button id="addUserBtn">Add User</button>
+      <button id="resetBtn">Reset</button>
+      <button id="importUsersBtn">Import Users</button>
+      <button id="exportUsersBtn">Export Users</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Thumbnail</th>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Email</th>
+          <th>Registered</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="userList">
+        <% users.results.forEach(user => { %>
+        <tr>
+          <td>
+            <img src="<%= user.picture.thumbnail %>" alt="User Thumbnail" />
+          </td>
+          <td>
+            <%= user.name.title %> <%= user.name.first %> <%= user.name.last %>
+          </td>
+          <td><%= user.gender %></td>
+          <td><%= user.email %></td>
+          <td><%= new Date(user.registered.date).toLocaleDateString() %></td>
+          <td>
+            <button class="editBtn" data-id="<%= user.login.uuid %>">
+              Edit
+            </button>
+            <button class="deleteBtn" data-id="<%= user.login.uuid %>">
+              Delete
+            </button>
+          </td>
+        </tr>
+        <% }); %>
+      </tbody>
+    </table>
+
+    <script>
+      document.getElementById('addUserBtn').onclick = function () {
+        alert('Add User clicked');
+      };
+
+      document.getElementById('resetBtn').onclick = function () {
+        alert('Reset clicked');
+      };
+
+      document.getElementById('importUsersBtn').onclick = function () {
+        alert('Import Users clicked');
+      };
+
+      document.getElementById('exportUsersBtn').onclick = function () {
+        alert('Export Users clicked');
+      };
+
+      document.querySelectorAll('.editBtn').forEach(function (button) {
+        button.onclick = function () {
+          const userId = this.getAttribute('data-id');
+          alert('Edit User ID: ' + userId);
+        };
+      });
+
+      document.querySelectorAll('.deleteBtn').forEach(function (button) {
+        button.onclick = function () {
+          const userId = this.getAttribute('data-id');
+          alert('Delete User ID: ' + userId);
+        };
+      });
+    </script>
+  </body>
+</html>

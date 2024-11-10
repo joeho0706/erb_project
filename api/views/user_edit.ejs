@@ -1,0 +1,13 @@
+<h3>Edit a teacher</h3>
+<form action="/teacher/edit_by_mongodb" method="post">
+  <input name="origName" type="hidden" value="<%=name%>" />
+  name: <input name="name" value="<%=name%>" /><br />
+  tel: <input name="tel" /><br />
+  sex: <input name="sex" /><br />
+  age: <input name="age" /><br />
+  course: (separate by ,)<input
+    name="course"
+    value="<%=course.join(',')%>"
+  /><br />
+  <button type="sumbit">edit</button> <button type="reset">reset</button>
+</form>

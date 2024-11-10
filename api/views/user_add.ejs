@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Add User</title>
+    <link rel="stylesheet" href="/stylesheets/form_style.css" />
+  </head>
+  <body>
+    <h1>Add User</h1>
+    <div class="button-container">
+      <button onclick="resetForm()">Reset</button>
+      <button onclick="generateRandomUser()">Random User</button>
+    </div>
+
+    <form action="/users/user_add" method="POST">
+      <table>
+        <tr>
+          <th>Thumbnail</th>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Address</th>
+          <th>Date of Birth</th>
+          <th>Password</th>
+          <th>Confirm Password</th>
+        </tr>
+        <tr>
+          <td>
+            <select
+              name="thumbnail"
+              id="thumbnail"
+              onchange="updateThumbnailPreview()"
+              required
+            >
+              <option value="">Select Image</option>
+              <option value="../svg/avatar-svgrepo-com-male-1.svg">
+                Male 1
+              </option>
+              <option value="../svg/avatar-svgrepo-com-male-2.svg">
+                Male 2
+              </option>
+              <option value="../svg/avatar-svgrepo-com-male-3.svg">
+                Male 3
+              </option>
+              <option value="../svg/avatar-svgrepo-com-female-1.svg">
+                Female 1
+              </option>
+              <option value="../svg/avatar-svgrepo-com-female-2.svg">
+                Female 2
+              </option>
+              <option value="../svg/avatar-svgrepo-com-female-3.svg">
+                Female 3
+              </option>
+            </select>
+            <img
+              id="thumbnailPreview"
+              src="../svg/avatar-svgrepo-com-male-1.svg"
+              alt="User Thumbnail"
+              style="width: 50px; height: auto"
+            />
+          </td>
+          <td>
+            <select name="title" required>
+              <option value="">Select Title</option>
+              <option value="Mr">Mr</option>
+              <option value="Ms">Ms</option>
+              <option value="Mrs">Mrs</option>
+              <option value="Dr">Dr</option>
+            </select>
+            <input type="text" name="first" placeholder="First Name" required />
+            <input type="text" name="last" placeholder="Last Name" required />
+          </td>
+          <td>
+            <select name="gender" required>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </td>
+          <td>
+            <input type="email" name="email" placeholder="Email" required />
+          </td>
+          <td>
+            <input type="tel" name="phone" placeholder="Phone" required />
+          </td>
+          <td>
+            <input type="text" name="street" placeholder="Street" required />
+            <input type="text" name="city" placeholder="City" required />
+            <input type="text" name="state" placeholder="State" required />
+            <input type="text" name="country" placeholder="Country" required />
+            <input
+              type="text"
+              name="postcode"
+              placeholder="Postcode"
+              required
+            />
+          </td>
+          <td>
+            <input type="date" name="dob" required />
+          </td>
+          <td>
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              required
+            />
+          </td>
+          <td>
+            <input
+              type="password"
+              name="confirm_password"
+              placeholder="Confirm Password"
+              required
+            />
+          </td>
+        </tr>
+      </table>
+      <div class="button-container">
+        <button type="submit">Add User</button>
+      </div>
+    </form>
+
+    <script>
+      function resetForm() {
+        document.querySelector('form').reset();
+        document.getElementById('thumbnailPreview').src =
+          '../svg/avatar-svgrepo-com-male-1.svg'; // Reset thumbnail
+      }
+
+      function generateRandomUser() {
+        alert('Random User functionality not implemented.');
+      }
+
+      function updateThumbnailPreview() {
+        const thumbnailSelect = document.getElementById('thumbnail');
+        const selectedThumbnail = thumbnailSelect.value;
+        document.getElementById('thumbnailPreview').src = selectedThumbnail;
+      }
+    </script>
+  </body>
+</html>
