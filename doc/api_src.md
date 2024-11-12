@@ -3,6 +3,10 @@
 - https://api.api-ninjas.com/v1/randomuser
 - https://randomuser.me/api/
 
+## Mock data schemas/modle
+
+- https://www.mockaroo.com/
+
 ## svg
 
 1. avatar
@@ -11,10 +15,12 @@
 
 ## users api
 
-- users/
-- users/user_add
-- users/user_edit
-- users/user_details
+- [] [GET] users/
+- [] [GET] users/user_add
+- [] [POST] users/user_add
+- [] [GET] users/user_edit
+- [] [POST] users/user_edit
+- [] [GET] users/user_details
 
 ## external api
 
