@@ -14,6 +14,7 @@
 - users/
 - users/user_add
 - users/user_edit
+- users/user_details
 
 ## external api
 
@@ -33,14 +34,18 @@
   6.  export user database
   7.  import user database
 
-- add_user.ejs
+- user_add.ejs
 
   1.  user form
   2.  ramdom user info
   3.  reset user info
   4.  confirm to add user
 
-- edit_user.ejs
+- user_edit.ejs
 
   1.  user form
   2.  confirm to edit user
+
+- user_details.ejs
+
+  1.  user form

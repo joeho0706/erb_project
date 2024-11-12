@@ -40,6 +40,9 @@
           <td><%= user.email %></td>
           <td><%= new Date(user.registered.date).toLocaleDateString() %></td>
           <td>
+            <button class="detailsBtn" data-id="<%= user.login.uuid %>">
+              Details
+            </button>
             <button class="editBtn" data-id="<%= user.login.uuid %>">
               Edit
             </button>
@@ -54,7 +57,8 @@
 
     <script>
       document.getElementById('addUserBtn').onclick = function () {
-        alert('Add User clicked');
+        // alert('Add User clicked');
+        window.location.href = '/users/user_add';
       };
 
       document.getElementById('resetBtn').onclick = function () {
@@ -69,10 +73,19 @@
         alert('Export Users clicked');
       };
 
+      document.querySelectorAll('.detailsBtn').forEach(function (button) {
+        button.onclick = function () {
+          // const userId = this.getAttribute('data-id');
+          // alert('Edit User ID: ' + userId);
+          window.location.href = '/users/user_details';
+        };
+      });
+
       document.querySelectorAll('.editBtn').forEach(function (button) {
         button.onclick = function () {
-          const userId = this.getAttribute('data-id');
-          alert('Edit User ID: ' + userId);
+          // const userId = this.getAttribute('data-id');
+          // alert('Edit User ID: ' + userId);
+          window.location.href = '/users/user_edit';
         };
       });
 
