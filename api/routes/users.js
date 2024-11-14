@@ -17,22 +17,21 @@ router.get('/', async function (req, res, next) {
     const database = client.db('mdb');
     const usersCollection = database.collection('users');
     // Fetch all users from the database
-    // const users = await usersCollection.find().toArray();
     const users = await usersCollection
       .find()
-      // .present({
-      //   user_id: 1,
-      //   name: 1,
-      //   gender: 1,
-      //   dob: 0,
-      //   email: 0,
-      //   avatar: 0,
-      //   password: 0,
-      // })
+      .project({
+        _id: 1,
+        // user_id: 0,
+        name: 1,
+        gender: 1,
+        dob: 1,
+        email: 1,
+        avatar: 1,
+        // password: 0,
+      })
       .toArray();
-    console.log(typeof users);
     // Render the users list with the fetched data
-    res.render('users', { users });
+    res.render('users', { users: users });
   } catch {
     console.error('Error:', error);
     res.status(500).json({ error: 'An error occurred' });
@@ -57,22 +56,14 @@ router.post('/user_add', async function (req, res, next) {
     const usersCollection = database.collection('users');
     // Create a user object
     const user = {
-      user_id,
-      name: { first, last },
-      gender,
-      dob,
-      email,
-      avatar,
-      password,
+      //user_id: req.body.user_id,
+      name: { first: req.body.name_first, last: req.body.name_last },
+      gender: req.body.gender,
+      dob: new Date(req.body.dob),
+      email: req.body.email,
+      avatar: req.body.avatar,
+      password: req.body.password,
     };
-    user.user_id = req.body.user_id;
-    user.name.first = req.body.first_name;
-    user.name.last = req.body.last_name;
-    user.gender = req.body.gender;
-    user.dob = new Date(req.body.dob);
-    user.email = req.body.email;
-    user.avatar = req.body.avatar;
-    user.password = req.body.password;
     // Insert the user into the database
     const result = await usersCollection.insertOne(user);
     // Send a response back to the client
@@ -100,12 +91,12 @@ router.get('/user_details', async function (req, res, next) {
     const user = usersCollection
       .findOne({ user_id: parseInt(req.query.userId) })
       .present({
-        user_id: 1,
-        name: 1,
-        gender: 1,
-        dob: 1,
-        email: 1,
-        avatar: 1,
+        // user_id: 1,
+        // name: 1,
+        // gender: 1,
+        // dob: 1,
+        // email: 1,
+        // avatar: 1,
         password: 0,
       });
     // Render the user details view with the fetched data

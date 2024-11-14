@@ -3,6 +3,11 @@
 - https://api.api-ninjas.com/v1/randomuser
 - https://randomuser.me/api/
 
+## Mockaroo api
+
+- https://my.api.mockaroo.com/user50/v1?key=5f2b4090
+- https://my.api.mockaroo.com/user/v1?key=5f2b4090
+
 ## Mock data schemas/modle
 
 - https://www.mockaroo.com/
@@ -13,18 +18,63 @@
    - https://www.freeimages.com/tw/illustrations/vector/svg
    - https://www.svgrepo.com
 
+## schemas
+
+- user
+
+  - \_id
+  - user_id (deprecated)
+  - name
+  - name.frist
+  - name.last
+  - gender
+  - dob
+  - email
+  - avatar
+  - password
+
+- avatar
+  - \_id
+  - index
+  - avatar
+  - category
+  - md5_hash
+
+## DOM name list
+
+- user_id
+- name_first
+- name_last
+- gender
+- dob
+- email
+- avatar
+- password
+
+## mongodb database
+
+- users
+- avatar
+
 ## users api
 
-- [] [GET] users/
-- [] [GET] users/user_add
-- [] [POST] users/user_add
-- [] [GET] users/user_edit
-- [] [POST] users/user_edit
-- [] [GET] users/user_details
+- [x] [GET] users/
+- [x] [GET] users/user_add
+- [x] [POST] users/user_add
+- [x] [GET] users/user_edit
+- [x] [POST] users/user_edit
+- [x] [GET] users/user_details
 
 ## external api
 
-- external/randomuser/user_get
+- [x] [GET] external/randomuser/user_get
+- [x] [GET] external/mockaroo/user50_get
+- [x] [GET] external/mockaroo/user_get
+
+## src api
+
+- [x] [GET] src/svg/avatar
+- []in process [POST] src/svg/avatar_add
 
 ## test src
 

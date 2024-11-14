@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add User</title>
-    <link rel="stylesheet" href="/stylesheets/form_style.css" />
+    <link rel="stylesheet" href="../stylesheets/form_style.css" />
   </head>
   <body>
     <h1>Add User</h1>
@@ -21,11 +21,8 @@
           <th>Name</th>
           <th>Gender</th>
           <th>Email</th>
-          <th>Phone</th>
-          <th>Address</th>
           <th>Date of Birth</th>
           <th>Password</th>
-          <th>Confirm Password</th>
         </tr>
         <tr>
           <td>
@@ -58,24 +55,17 @@
             />
           </td>
           <td>
-            <select name="title" id="title" required>
-              <option value="">Select Title</option>
-              <option value="Mr">Mr</option>
-              <option value="Ms">Ms</option>
-              <option value="Mrs">Mrs</option>
-              <option value="Dr">Dr</option>
-            </select>
             <input
               type="text"
-              name="first"
-              id="firstName"
+              name="name_first"
+              id="name_first"
               placeholder="First Name"
               required
             />
             <input
               type="text"
-              name="last"
-              id="lastName"
+              name="name_last"
+              id="name_last"
               placeholder="Last Name"
               required
             />
@@ -83,8 +73,9 @@
           <td>
             <select name="gender" id="gender" required>
               <option value="">Select Gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Unkown">Unkown</option>
             </select>
           </td>
           <td>
@@ -97,66 +88,20 @@
             />
           </td>
           <td>
-            <input
-              type="tel"
-              name="phone"
-              id="phone"
-              placeholder="Phone"
-              required
-            />
-          </td>
-          <td>
-            <input
-              type="text"
-              name="street"
-              id="street"
-              placeholder="Street"
-              required
-            />
-            <input
-              type="text"
-              name="city"
-              id="city"
-              placeholder="City"
-              required
-            />
-            <input
-              type="text"
-              name="state"
-              id="state"
-              placeholder="State"
-              required
-            />
-            <input
-              type="text"
-              name="country"
-              id="country"
-              placeholder="Country"
-              required
-            />
-            <input
-              type="text"
-              name="postcode"
-              id="postcode"
-              placeholder="Postcode"
-              required
-            />
-          </td>
-          <td>
             <input type="date" name="dob" id="dob" required />
           </td>
           <td>
             <input
               type="password"
               name="password"
+              id="password"
               placeholder="Password"
               required
             />
-          </td>
-          <td>
             <input
               type="password"
               name="confirm_password"
+              id="confirm_password"
               placeholder="Confirm Password"
               required
             />
@@ -204,27 +149,23 @@
 
       async function fetchRandomUser() {
         try {
-          const response = await fetch('/external/randomuser/user_get');
-          const data = await response.json();
-          const user = data.results[0];
+          const response = await fetch('/external/mockaroo/user_get');
+          const user = await response.json();
 
           // Populate fields with user data
-          document.getElementById('firstName').value = user.name.first;
-          document.getElementById('lastName').value = user.name.last;
-          document.getElementById('gender').value = user.gender;
+          document.getElementById('name_first').value = user.name.first;
+          document.getElementById('name_last').value = user.name.last;
+          document.getElementById('gender').value =
+            user.gender == 'Male' || user.gender == 'Female'
+              ? user.gender
+              : 'Unkown';
           document.getElementById('email').value = user.email;
-          document.getElementById('phone').value = user.phone;
-          document.getElementById('street').value = user.location.street.name;
-          document.getElementById('city').value = user.location.city;
-          document.getElementById('state').value = user.location.state;
-          document.getElementById('country').value = user.location.country;
-          document.getElementById('postcode').value = user.location.postcode;
-          document.getElementById('dob').value = user.dob.date.split('T')[0]; // Format date
-          document.getElementById('title').value = user.name.title; // Update title based on fetched data
+          document.getElementById('dob').value = user.dob.split('T')[0]; // Format date
+          document.getElementById('password').value = user.password;
+          document.getElementById('confirm_password').value = user.password;
 
           randomizeSVG(); // Randomly select an SVG after fetching user
         } catch (error) {
-          console.error('Error fetching random user:', error);
           alert('Failed to fetch random user.');
         }
       }
