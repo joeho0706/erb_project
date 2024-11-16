@@ -1,16 +1,16 @@
 var express = require('express');
 var router = express.Router();
 
-/* Get user infomation from randomuser api. */
+/* Get user infomation from randomuser api. */ // [x]
 router.get('/randomuser/user_get', function (req, res, next) {
-  let results = req.query.results;
-
-  fetch(`https://randomuser.me/api/?results=${results}`)
+  // Fetch data
+  fetch(`https://randomuser.me/api/?results=${req.query.results}`)
     .then((response) => response.json())
     .then((data) => {
       res.json(data);
     })
     .catch((error) => {
+      // Error Message
       console.error('Error:', error);
       res.status(500).json({ error: 'An error occurred' });
     });

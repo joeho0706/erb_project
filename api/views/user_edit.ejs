@@ -1,13 +1,178 @@
-<h3>Edit a teacher</h3>
-<form action="/teacher/edit_by_mongodb" method="post">
-  <input name="origName" type="hidden" value="<%=name%>" />
-  name: <input name="name" value="<%=name%>" /><br />
-  tel: <input name="tel" /><br />
-  sex: <input name="sex" /><br />
-  age: <input name="age" /><br />
-  course: (separate by ,)<input
-    name="course"
-    value="<%=course.join(',')%>"
-  /><br />
-  <button type="sumbit">edit</button> <button type="reset">reset</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit User</title>
+    <link rel="stylesheet" href="../stylesheets/form_style.css" />
+  </head>
+  <body onload="initForm()">
+    <h1>Edit User</h1>
+
+    <form id="submission_form" action="/users/user_edit" method="POST">
+      <input name="_id" id="_id" type="hidden" />
+      <table>
+        <tr>
+          <th>Thumbnail</th>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Email</th>
+          <th>Date of Birth</th>
+          <th>Password</th>
+        </tr>
+        <tr>
+          <td>
+            <select name="thumbnail" id="thumbnail" required>
+              <option value="">Select Image</option>
+              <option value="../svg/avatar-svgrepo-com-male-1.svg">
+                Male 1
+              </option>
+              <option value="../svg/avatar-svgrepo-com-male-2.svg">
+                Male 2
+              </option>
+              <option value="../svg/avatar-svgrepo-com-male-3.svg">
+                Male 3
+              </option>
+              <option value="../svg/avatar-svgrepo-com-female-1.svg">
+                Female 1
+              </option>
+              <option value="../svg/avatar-svgrepo-com-female-2.svg">
+                Female 2
+              </option>
+              <option value="../svg/avatar-svgrepo-com-female-3.svg">
+                Female 3
+              </option>
+            </select>
+            <img
+              id="thumbnailPreview"
+              src="../svg/avatar-svgrepo-com-male-1.svg"
+              alt="User Thumbnail"
+              style="width: 50px; height: auto"
+            />
+          </td>
+          <td>
+            <label type="text" name="t_id" id="t_id"><%= user._id%></label>
+          </td>
+          <td>
+            <input
+              type="text"
+              name="name_first"
+              id="name_first"
+              placeholder="First Name"
+              required
+            />
+            <input
+              type="text"
+              name="name_last"
+              id="name_last"
+              placeholder="Last Name"
+              required
+            />
+          </td>
+          <td>
+            <select name="gender" id="gender" required>
+              <option value="">Select Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Unkown">Unkown</option>
+            </select>
+          </td>
+          <td>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              placeholder="Email"
+              required
+            />
+          </td>
+          <td>
+            <input type="date" name="dob" id="dob" required />
+          </td>
+          <td>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              placeholder="Password"
+              required
+            />
+            <input
+              type="password"
+              name="confirm_password"
+              id="confirm_password"
+              placeholder="Confirm Password"
+              required
+            />
+          </td>
+        </tr>
+      </table>
+      <div class="button-container">
+        <button type="submit">Edit User</button>
+      </div>
+    </form>
+    <a href="/users" class="btn">Back to Users</a>
+
+    <script>
+      const form = document.getElementById('submission_form');
+
+      form.addEventListener('submit', async function (event) {
+        //TODO will modify sumit listener
+        // Display the confirmation dialog
+        const confirmSubmission = confirm(
+          'Are you sure you want to edit this user?'
+        );
+        // // If the user confirms, allow the form to submit
+        if (confirmSubmission) {
+          //   event.preventDefault();
+          //   const form_data = new FormData(event.target);
+
+          //   const response = await fetch('/users/user_edit', {
+          //     method: 'POST',
+          //     // body: form_data,
+          //     body: JSON.stringify(form_data),
+          //   });
+          //   if (response.ok)
+          //     // Redirect the user to the index page
+          //     window.location.href = '/users';
+          //   else document.write(`A error is occured`);
+
+          return true;
+        }
+        // If the user cancels, prevent the form from submitting
+        else {
+          event.preventDefault();
+          return false;
+        }
+      });
+      function initForm() {
+        document.getElementById('thumbnailPreview').src =
+          '../svg/avatar-svgrepo-com-male-1.svg'; // Reset thumbnail
+        document.getElementById('_id').value = '<%= user._id%>';
+        document.getElementById('name_last').value = '<%= user.name.last%>';
+        document.getElementById('name_first').value = '<%= user.name.first%>';
+        document.getElementById('gender').value =
+          '<%= user.gender%>' == 'Male' || '<%= user.gender%>' == 'Female'
+            ? '<%= user.gender%>'
+            : 'Unkown';
+        document.getElementById('email').value = '<%= user.email%>';
+        document.getElementById('dob').value =
+          '<%= user.dob.toISOString().slice(0, 10) %>'; // Format date
+        document.getElementById('password').value = '<%= user.password%>';
+        document.getElementById('confirm_password').value =
+          '<%= user.password%>';
+      }
+
+      function editUserAlert() {
+        confirm('Are you sure you want to edit this user?');
+      }
+
+      function updateThumbnailPreview() {
+        const thumbnailSelect = document.getElementById('thumbnail');
+        const selectedThumbnail = thumbnailSelect.value;
+        document.getElementById('thumbnailPreview').src = selectedThumbnail;
+      }
+    </script>
+  </body>
+</html>

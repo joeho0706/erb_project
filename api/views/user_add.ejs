@@ -14,7 +14,8 @@
       <button onclick="fetchRandomUser()">Random User</button>
     </div>
 
-    <form action="/users/user_add" method="POST">
+    <!-- <form id="submission_form"> -->
+    <form id="submission_form" action="/users/user_add" method="POST">
       <table>
         <tr>
           <th>Thumbnail</th>
@@ -112,8 +113,21 @@
         <button type="submit">Add User</button>
       </div>
     </form>
+    <a href="/users" class="btn">Back to Users</a>
 
     <script>
+      // Get the form element
+      const form = document.getElementById('submission_form');
+
+      // Add an event listener for the 'submit' event  // TODO will modify submit listener
+      form.addEventListener('submit', async function (event) {
+        // Prevent the default form submission behavior
+        // event.preventDefault();
+        // Perform any necessary form processing here...
+        // Redirect the user to the index page
+        // window.location.href = '/users';
+      });
+
       function resetForm() {
         document.querySelector('form').reset();
         document.getElementById('thumbnailPreview').src =
