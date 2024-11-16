@@ -3,13 +3,25 @@ var router = express.Router();
 const { MongoClient, ObjectId } = require('mongodb');
 const client = new MongoClient('mongodb://localhost:27017');
 
+const isValidContentType = async (req, res, next) => {
+  // Check content type is application/json of headers
+  if (req.headers['content-type'] == 'application/json') next();
+  else res.status(400).send('Invalid Content-Type. Expected application/json');
+};
+const connectMongoDB = async (req, res, next) => {
+  // Connect to the MongoDB client
+  await client.connect();
+  const database = client.db('mdb');
+  const usersCollection = database.collection('users');
+};
+
 // /* GET users listing. */
 // router.get('/', function(req, res, next) {
 //   res.send('respond with a resource');
 // });
 
 /* GET users listing. */
-router.get('/', async function (req, res, next) {
+router.get('/view', async function (req, res, next) {
   try {
     // Connect to the MongoDB client
     await client.connect();
@@ -45,17 +57,13 @@ router.get('/', async function (req, res, next) {
 });
 
 /* Get adding user view. */ //[x]
-router.get('/user_add', function (req, res, next) {
+router.get('/view_user_add', function (req, res, next) {
   res.render('user_add');
 });
 
 /* POST user information. */ //[x]
-router.post('/user_add', async function (req, res, next) {
+router.post('/user_add', [connectMongoDB], async function (req, res, next) {
   try {
-    // Connect to the MongoDB client
-    await client.connect();
-    const database = client.db('mdb');
-    const usersCollection = database.collection('users');
     // Create a user object
     const user = {
       name: { first: req.body.name_first, last: req.body.name_last },
@@ -70,14 +78,13 @@ router.post('/user_add', async function (req, res, next) {
     // Insert the user into the database
     const result = await usersCollection.insertOne(user);
     // Check inserting result
-    console.log('🚀 ~ result.acknowledged:', result.acknowledged);
-    if (result.acknowledged == false) throw new Error('Failed to add user');
+    if (result.insertedCount < 1) throw new Error('Failed to add users');
     // feedback status
-    res.status(200).send('User added successfully');
+    res.status(200).send(` ${result.insertedCount} Users added successfully`);
   } catch (error) {
     // Error Massage
     console.error('Error adding user:', error);
-    res.status(500).json({ message: 'Failed to add user' });
+    res.status(500).send('Failed to add users');
   } finally {
     // Close the connection
     await client.close();
@@ -85,7 +92,7 @@ router.post('/user_add', async function (req, res, next) {
 });
 
 /* Get user details view. */ // [x]
-router.get('/user_details', async function (req, res, next) {
+router.get('/view_user_details', async function (req, res, next) {
   try {
     // Connect to the MongoDB client
     await client.connect();
@@ -119,7 +126,7 @@ router.get('/user_details', async function (req, res, next) {
 });
 
 /* Get edit user view. */
-router.get('/user_edit', async function (req, res, next) {
+router.get('/view_user_edit', async function (req, res, next) {
   try {
     // Connect to the MongoDB client
     await client.connect();
@@ -240,6 +247,16 @@ router.get('/user_delete_all', async function (req, res, next) {
   } finally {
     // Close Collection
     await client.close();
+  }
+});
+
+router.post('/test', [isValidContentType], async function (req, res, next) {
+  try {
+    console.log('🚀 ~ req.body:', req.body);
+    console.log('🚀 ~ req.headers:', req.headers['content-type']);
+    res.send('respond with a resource : ');
+  } catch (error) {
+    console.error(error);
   }
 });
 

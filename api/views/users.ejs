@@ -8,7 +8,9 @@
   </head>
   <body>
     <h1>Users List</h1>
-    <button onclick="window.location.href='/users/user_add'">Add User</button>
+    <button onclick="window.location.href='/users/view_user_add'">
+      Add User
+    </button>
     <button onclick="location.reload()">Update</button>
     <button onclick="loadData()">Import Users</button>
     <button onclick="exportData()">Export Users</button>
@@ -40,12 +42,12 @@
           <td><%= new Date(user.dob).toLocaleDateString() %></td>
           <td>
             <button
-              onclick="window.location.href='/users/user_details?id=<%= user._id %>'"
+              onclick="window.location.href='/users/view_user_details?id=<%= user._id %>'"
             >
               Details
             </button>
             <button
-              onclick="window.location.href='/users/user_edit?id=<%= user._id %>'"
+              onclick="window.location.href='/users/view_user_edit?id=<%= user._id %>'"
             >
               Edit
             </button>

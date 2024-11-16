@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <form id="myForm" action="/users/test" method="POST">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" value="form1" required />
+
+      <label for="age">Age:</label>
+      <input type="number" id="age" name="age" value="11" required />
+
+      <button type="submit">Submit by action</button>
+    </form>
+    <form id="myForm2" action="/users/test" method="POST">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" value="form2" required />
+
+      <label for="age">Age:</label>
+      <input type="number" id="age" name="age" value="22" required />
+
+      <button type="submit">Submit by json</button>
+    </form>
+    <script>
+      const form2 = document.getElementById('myForm2');
+
+      form2.addEventListener('submit', async (event) => {
+        event.preventDefault(); // 阻止默认表单提交行为
+
+        const formData = new FormData(event.target);
+        const body = Object.fromEntries(formData.entries());
+        console.log('🚀 ~ form2.addEventListener ~ body:', body);
+
+        const response = await fetch('/users/test', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(body),
+        });
+      });
+    </script>
+  </body>
+</html>
