@@ -8,7 +8,7 @@
 - https://my.api.mockaroo.com/user50/v1?key=5f2b4090
 - https://my.api.mockaroo.com/user/v1?key=5f2b4090
 
-## Mock data schemas/modle
+## Mock data schemas/model
 
 - https://www.mockaroo.com/
 
@@ -64,6 +64,8 @@
 - [x] [GET] users/user_edit
 - [x] [POST] users/user_edit
 - [x] [GET] users/user_details
+- [x] [GET] users/user_delete_all
+- [x] [GET] users/user_delete/:id
 
 ## external api
 
@@ -74,7 +76,7 @@
 ## src api
 
 - [x] [GET] src/svg/avatar
-- []in process [POST] src/svg/avatar_add
+- [ ]in process [POST] src/svg/avatar_add
 
 ## test src
 
@@ -89,19 +91,23 @@
   5.  reset user database
   6.  export user database
   7.  import user database
+  8.  delete all users
 
-- user_add.ejs
+- [x]user_add.ejs
 
   1.  user form
   2.  ramdom user info
   3.  reset user info
   4.  confirm to add user
+  5.  back to users list
 
-- user_edit.ejs
+- [x]user_edit.ejs
 
   1.  user form
   2.  confirm to edit user
+  3.  back to users list
 
-- user_details.ejs
+- [x]user_details.ejs
 
   1.  user form
+  2.  back to users list
