@@ -24,7 +24,6 @@
 
   - \_id
   - user_id (deprecated)
-  - name
   - name.frist
   - name.last
   - gender
@@ -42,7 +41,8 @@
 
 ## DOM name list
 
-- user_id
+- user_id (deprecated)
+- \_id
 - name_first
 - name_last
 - gender
@@ -57,6 +57,16 @@
 - avatar
 
 ## users api
+
+- feature jsonConvertTypes
+- feature eliminateNonAllowedProps
+- feature isValidJson
+- feature manipulateJson
+- feature isValidSchema
+- feature bodyArray
+- feature usersInfoSchema
+- feature testSchema
+- [GET] users/test
 
 - [x] [GET] users/view
 - [x] [GET] users/view_user_add

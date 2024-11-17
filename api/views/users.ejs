@@ -71,7 +71,7 @@
 
       function deleteUsers() {
         if (confirm('Are you sure you want to delete all users?')) {
-          fetch(`users/user_delete_all`)
+          fetch(`../users/user_delete_all`)
             .then((res) => {
               return res.json();
             })
@@ -87,7 +87,7 @@
 
       function deleteUser(_id) {
         if (confirm('Are you sure you want to delete this user?')) {
-          fetch(`users/user_delete/${_id}`)
+          fetch(`../users/user_delete/${_id}`)
             .then((res) => {
               return res.json();
             })

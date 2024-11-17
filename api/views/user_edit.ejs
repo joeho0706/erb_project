@@ -9,7 +9,12 @@
   <body onload="initForm()">
     <h1>Edit User</h1>
 
-    <form id="submission_form" action="/users/user_edit" method="POST">
+    <form
+      id="submission_form"
+      action="/users/user_edit"
+      method="POST"
+      novalidate
+    >
       <input name="_id" id="_id" type="hidden" />
       <table>
         <tr>
@@ -125,18 +130,37 @@
         );
         // // If the user confirms, allow the form to submit
         if (confirmSubmission) {
-          //   event.preventDefault();
-          //   const form_data = new FormData(event.target);
+          event.preventDefault();
+          try {
+            // Collect the form data
+            const formData = new FormData(event.target);
+            const formDataObject = {};
+            for (const [key, value] of formData.entries()) {
+              formDataObject[key] = value;
+            }
 
-          //   const response = await fetch('/users/user_edit', {
-          //     method: 'POST',
-          //     // body: form_data,
-          //     body: JSON.stringify(form_data),
-          //   });
-          //   if (response.ok)
-          //     // Redirect the user to the index page
-          //     window.location.href = '/users';
-          //   else document.write(`A error is occured`);
+            // Send a POST request using the Fetch API
+            const response = await fetch('/users/user_edit', {
+              method: 'POST',
+              body: JSON.stringify(formDataObject),
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+
+            if (response.ok) {
+              // Handle the successful response
+              console.log('User edited successfully');
+
+              // Redirect the user to the endpoint
+              window.location.href = '/users/view';
+            } else {
+              // Handle the error response
+              console.error('Error editing user:', response.status);
+            }
+          } catch (error) {
+            console.error('Error:', error);
+          }
 
           return true;
         }

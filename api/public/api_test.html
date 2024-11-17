@@ -33,6 +33,10 @@
         const formData = new FormData(event.target);
         const body = Object.fromEntries(formData.entries());
         console.log('🚀 ~ form2.addEventListener ~ body:', body);
+        console.log(
+          '🚀 ~ form2.addEventListener ~ JSON.stringify(body):',
+          JSON.stringify(body)
+        );
 
         const response = await fetch('/users/test', {
           method: 'POST',
