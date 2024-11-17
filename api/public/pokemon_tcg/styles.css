@@ -1,0 +1,35 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+#app {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  flex-wrap: wrap;
+  padding: 40px;
+}
+.container {
+  display: flex;
+  flex-direction: row;
+}
+.nav {
+  background-color: red;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  width: auto;
+  height: auto;
+  box-shadow: 0px 4px 20px 3px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  text-transform: capitalize;
+  font-size: 18px;
+}
+img {
+  transition: all 0.3s ease-in-out;
+}
+img.img--active {
+  width: 120%;
+}
