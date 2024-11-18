@@ -16,5 +16,8 @@
     "mongodb": "^6.10.0",
     "morgan": "~1.9.1",
     "nodemon": "^3.1.7"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^9.2.0"
   }
 }
