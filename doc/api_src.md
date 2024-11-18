@@ -33,28 +33,52 @@
   - password
 
 - avatar
+
   - \_id
   - index
-  - avatar
+  - avatar // TODO will be deleted
   - category
-  - md5_hash
+  - md5_hash // TODO will be deleted
+  - image // TODO will be added
+
+- image
+  - \_id
+  - url.filename
+  - url.path
+  - content_type
+  - size
+  - md5
+  - createdAt
 
 ## DOM name list
 
-- user_id (deprecated)
-- \_id
-- name_first
-- name_last
-- gender
-- dob
-- email
-- avatar
-- password
+- user
+
+  - user_id (deprecated)
+  - \_id
+  - name_first
+  - name_last
+  - gender
+  - dob
+  - email
+  - avatar
+  - password
+
+- image
+  - \_id
+  - url_filename
+  - url_path
+  - content_type
+  - size
+  - md5
+  - createdAt
+  - category
 
 ## mongodb database
 
 - users
-- avatar
+- avatar (deprecated)
+- images
 
 ## users api
 
@@ -76,6 +100,23 @@
 - [x] [GET] users/view_user_details
 - [x] [GET] users/user_delete_all
 - [x] [GET] users/user_delete/:id
+
+## images api
+
+- feature jsonConvertTypes
+- feature eliminateNonAllowedProps
+- feature isValidJson
+- feature manipulateJson
+- feature isValidSchema
+- feature bodyArray
+- feature imagesInfoSchema
+- feature testSchema
+- [GET] images/test
+
+- [ ] [GET] images/view
+- [ ] [POST] images/image_add
+- [ ] [GET] images/image_delete_all
+- [ ] [GET] images/image_delete/:id
 
 ## external api
 
