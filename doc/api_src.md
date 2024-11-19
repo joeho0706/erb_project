@@ -42,6 +42,7 @@
   - image // TODO will be added
 
 - image
+
   - \_id
   - url.filename
   - url.path
@@ -49,6 +50,15 @@
   - size
   - md5
   - createdAt
+
+- card_exchange_cell
+  - \_id
+  - cards
+  - users.user1_id
+  - users.user2_id
+  - title
+  - description
+  - status
 
 ## DOM name list
 
@@ -100,6 +110,7 @@
 - [x] [GET] users/view_user_details
 - [x] [GET] users/user_delete_all
 - [x] [GET] users/user_delete/:id
+- [ ] [GET] users/pagination
 
 ## images api
 

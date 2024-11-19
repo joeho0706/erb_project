@@ -342,6 +342,40 @@ router.get('/user_delete_all', async function (req, res, next) {
   }
 });
 
+router.get('/pagination', async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+
+  const users = [];
+
+  // Connect to the MongoDB client
+  await client.connect();
+  const database = client.db('mdb');
+  const usersCollection = database.collection('users');
+  usersCollection
+    .find(
+      {},
+      {
+        projection: {
+          _id: 1,
+          name: 1,
+          gender: 1,
+          dob: 1,
+          email: 1,
+          avatar: 1,
+          password: 1,
+        },
+      }
+    )
+    .skip((page - 1) * limit)
+    .limit(limit)
+    .forEach((user) => users.push(user))
+    .then(() => res.status(200).json(users))
+    .catch((err) => {
+      res.status(500).send('Error occurred');
+    });
+});
+
 let testSchema = [
   body('name').isString().notEmpty(),
   body('age').isInt({ min: 0 }),
