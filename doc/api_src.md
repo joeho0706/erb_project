@@ -102,6 +102,8 @@
 - feature testSchema
 - [GET] users/test
 
+- [x] [GET] users/
+- [x] [GET] users/:id
 - [x] [GET] users/view
 - [x] [GET] users/view_user_add
 - [x] [POST] users/user_add
