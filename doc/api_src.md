@@ -102,17 +102,28 @@
 - feature testSchema
 - [GET] users/test
 
+- [x] [GET] users/ (deprecated)
+- [x] [GET] users/:id (deprecated)
+- [x] [GET] users/view (deprecated)
+- [x] [GET] users/view_user_add (deprecated)
+- [x] [POST] users/user_add (deprecated)
+- [x] [GET] users/view_user_edit (deprecated)
+- [x] [POST] users/user_edit (deprecated)
+- [x] [GET] users/view_user_details (deprecated)
+- [x] [GET] users/user_delete_all (deprecated)
+- [x] [GET] users/user_delete/:id (deprecated)
+- [ ] [GET] users/pagination (deprecated)
+
 - [x] [GET] users/
-- [x] [GET] users/:id
+- [x] [POST] users/
+- [x] [PUT] users/
+- [x] [DELETE] users/
 - [x] [GET] users/view
-- [x] [GET] users/view_user_add
-- [x] [POST] users/user_add
-- [x] [GET] users/view_user_edit
-- [x] [POST] users/user_edit
-- [x] [GET] users/view_user_details
-- [x] [GET] users/user_delete_all
-- [x] [GET] users/user_delete/:id
-- [ ] [GET] users/pagination
+- [x] [GET] users/user_add
+- [x] [GET] users/user_details
+- [x] [GET] users/user_edit
+- [x] [GET] users/:id
+- [x] [DELETE] users/:id
 
 ## images api
 

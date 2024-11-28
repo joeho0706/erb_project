@@ -36,3 +36,7 @@
 
 - [筆記] 把玩 express-validator 在伺服器端做表單驗證 https://medium.com/麥克的半路出家筆記/筆記-把玩-express-validator-在伺服器端做表單驗證-797342aab2d3
 - exclude or include or intercept and remove body propertys https://poe.com/s/HPDuzi2B5OKG15UBG40J
+
+## RESTFul study
+
+- 一杯茶的时间，搞懂 RESTful API https://apifox.com/blog/a-cup-of-tea-time-to-understand-restful-api/?utm_source=google_search&utm_medium=g&utm_campaign=15676663585&utm_content=137784982731&utm_term=&gad_source=1&gclid=Cj0KCQiAgJa6BhCOARIsAMiL7V867ZxWGKoi5yzPTd-V2Sase51K4E9hAWf4aEepPqPZP980-PXBis8aAom3EALw_wcB

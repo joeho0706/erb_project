@@ -3,13 +3,22 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const env = require('dotenv').config();
+const { MongoClient, ObjectId } = require('mongodb');
+var methodOverride = require('method-override');
+
+var app = express();
+
+// Middleware to parse URL-encoded data
+app.use(express.urlencoded({ extended: true }));
+
+// Middleware to override HTTP methods
+app.use(methodOverride('_method'));
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var externalRouter = require('./routes/external');
 var srcRouter = require('./routes/src');
-
-var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -40,6 +49,34 @@ app.use(function (err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+async function connectDB() {
+  client = new MongoClient(process.env.DB_URL);
+  await client.connect();
+  console.log('MongoDB connected');
+  return client.db();
+}
+
+app.locals.connectDB = connectDB;
+
+// Close the MongoDB connection
+async function closeDB() {
+  if (client) {
+    await client.close();
+    console.log('MongoDB connection closed');
+  }
+}
+
+// Gracefully close MongoDB connection on process termination
+process.on('SIGINT', async () => {
+  await closeDB();
+  process.exit(0);
+});
+
+process.on('SIGTERM', async () => {
+  await closeDB();
+  process.exit(0);
 });
 
 module.exports = app;
