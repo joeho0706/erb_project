@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokémon Pagination</title>
+  </head>
+  <body>
+    <h1>Pokémon List</h1>
+    <ul>
+      <% pokemons.forEach(pokemon => { %>
+      <li><a href="<%= pokemon.url %>"><%= pokemon.name %></a></li>
+      <% }) %>
+    </ul>
+
+    <div>
+      <% if (currentPage > 1) { %>
+      <a href="/pokemon?page=<%= currentPage - 1 %>">Previous</a>
+      <% } %>
+      <span>Page <%= currentPage %> of <%= totalPages %></span>
+      <% if (currentPage < totalPages) { %>
+      <a href="/pokemon?page=<%= currentPage + 1 %>">Next</a>
+      <% } %>
+    </div>
+  </body>
+</html>

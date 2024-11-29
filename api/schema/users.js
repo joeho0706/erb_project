@@ -9,8 +9,10 @@ const usersInfoSchema = [
   // body('avatar').notEmpty().isURL().withMessage('Avatar is required'), // TODO will be switched if fixed avatar
   body('password')
     .notEmpty()
-    .isLength({ min: 6 })
-    .withMessage('Password is required'),
+    .isStrongPassword({
+      minLength: 6,
+    })
+    .withMessage('Password is required and minimum 6 characters'),
 ];
 
 module.exports = { usersInfoSchema };

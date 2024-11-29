@@ -29,31 +29,7 @@
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody>
-        <% users.forEach(user => { %>
-        <tr>
-          <td><img src="<%= user.avatar %>" alt="Avatar" width="50" /></td>
-          <td><%= user._id %></td>
-          <td><%= user.name.first %> <%= user.name.last %></td>
-          <td><%= user.gender %></td>
-          <td><%= user.email %></td>
-          <td><%= new Date(user.dob).toLocaleDateString() %></td>
-          <td>
-            <button
-              onclick="window.location.href='/users/user_details?id=<%= user._id %>'"
-            >
-              Details
-            </button>
-            <button
-              onclick="window.location.href='/users/user_edit?id=<%= user._id %>'"
-            >
-              Edit
-            </button>
-            <button onclick="deleteUser('<%=user._id%>')">Delete</button>
-          </td>
-        </tr>
-        <% }); %>
-      </tbody>
+      <tbody></tbody>
     </table>
 
     <h2>Pagination</h2>
@@ -70,151 +46,194 @@
       <a href="#">&raquo;</a>
     </div>
 
+    <div id="pagination-container"></div>
+
     <script>
-      function importUsers() {
-        // Implement import users functionality
-        alert('Import Users feature is not implemented yet.');
-      }
+        function importUsers() {
+          // Implement import users functionality
+          alert('Import Users feature is not implemented yet.');
+        }
 
-      function exportUsers() {
-        // Implement export users functionality
-        alert('Export Users feature is not implemented yet.');
-      }
+        function exportUsers() {
+          // Implement export users functionality
+          alert('Export Users feature is not implemented yet.');
+        }
 
-      function deleteUsers() {
-        if (confirm('Are you sure you want to delete all users?')) {
-          fetch(`../users`,{
-              method: 'DELETE',
-          })
-            .then((res) => {
-              return res.json();
+        function deleteUsers() {
+          if (confirm('Are you sure you want to delete all users?')) {
+            fetch(`../users`,{
+                method: 'DELETE',
             })
-            .then((data) => {
-              alert(data.msg);
-              location.reload();
-            })
-            .catch((error) => {
-              console.error('Error deleting users:', error);
-            });
-        } else alert('Cancel delete.');
-      }
-
-      function deleteUser(_id) {
-        if (confirm('Are you sure you want to delete this user?')) {
-          fetch(`../users/${_id}`,{
-              method: 'DELETE',
+              .then((res) => {
+                return res.json();
               })
-            .then((res) => {
-              return res.json();
-            })
-            .then((data) => {
-              alert(data.msg);
-              location.reload();
-            })
-            .catch((error) => {
-              console.error('Error deleting user:', error);
+              .then((data) => {
+                alert(data.msg);
+                location.reload();
+              })
+              .catch((error) => {
+                console.error('Error deleting users:', error);
+              });
+          } else alert('Cancel delete.');
+        }
+
+        function deleteUser(_id) {
+          if (confirm('Are you sure you want to delete this user?')) {
+            fetch(`../users/${_id}`,{
+                method: 'DELETE',
+                })
+              .then((res) => {
+                return res.json();
+              })
+              .then((data) => {
+                alert(data.msg);
+                location.reload();
+              })
+              .catch((error) => {
+                console.error('Error deleting user:', error);
+              });
+          } else alert('Cancel delete.');
+        }
+
+        // Function to export the data as a CSV or JSON file
+        async function exportData() {
+          const data = <%- JSON.stringify(users) %>; // TODO data unsafety because of password
+
+          try {
+            // Create a new file picker dialog
+            const fileHandle = await window.showSaveFilePicker({
+              suggestedName: 'data',
+              types: [
+                {
+                  description: 'Comma-Separated Values',
+                  accept: { 'text/csv': ['.csv'] },
+                },
+                {
+                  description: 'JSON Files',
+                  accept: { 'application/json': ['.json'] },
+                },
+              ],
             });
-        } else alert('Cancel delete.');
-      }
 
-      // Function to export the data as a CSV or JSON file
-      async function exportData() {
-        const data = <%- JSON.stringify(users) %>; // TODO data unsafety because of password
+            // Determine the file type based on the selected file extension
+            const fileType = fileHandle.name.endsWith('.csv') ? 'csv' : 'json';
 
-        try {
-          // Create a new file picker dialog
-          const fileHandle = await window.showSaveFilePicker({
-            suggestedName: 'data',
-            types: [
-              {
-                description: 'Comma-Separated Values',
-                accept: { 'text/csv': ['.csv'] },
-              },
-              {
-                description: 'JSON Files',
-                accept: { 'application/json': ['.json'] },
-              },
-            ],
-          });
+            // Prepare the file data based on the selected file type
+            let fileData;
+            if (fileType === 'csv') {
+              fileData = data.map((row) => `${row.name},${row.age}`).join('\n'); //TODO not work yet due to json to csv
+            } else {
+              fileData = JSON.stringify(data, null, 2);
+            }
 
-          // Determine the file type based on the selected file extension
-          const fileType = fileHandle.name.endsWith('.csv') ? 'csv' : 'json';
+            // Write the data to the selected file
+            const fileStream = await fileHandle.createWritable();
+            await fileStream.write(fileData);
+            await fileStream.close();
 
-          // Prepare the file data based on the selected file type
-          let fileData;
-          if (fileType === 'csv') {
-            fileData = data.map((row) => `${row.name},${row.age}`).join('\n'); //TODO not work yet due to json to csv
-          } else {
-            fileData = JSON.stringify(data, null, 2);
+            console.log(`File saved as ${fileHandle.name} successfully!`);
+          } catch (err) {
+            console.error('Error saving file:', err);
+          }
+        }
+
+        // Function to load data from a CSV or JSON file
+        async function loadData() {
+          try {
+            // Create a new file picker dialog
+            const [fileHandle] = await window.showOpenFilePicker({
+              types: [
+                {
+                  description: 'Comma-Separated Values',
+                  accept: { 'text/csv': ['.csv'] },
+                },
+                {
+                  description: 'JSON Files',
+                  accept: { 'application/json': ['.json'] },
+                },
+              ],
+            });
+
+            // Read the file contents
+            const file = await fileHandle.getFile();
+            const fileData = await file.text();
+
+            // Determine the file type based on the selected file extension
+            const fileType = fileHandle.name.endsWith('.csv') ? 'csv' : 'json';
+
+            // Parse the file data based on the file type
+            let data;
+            if (fileType === 'csv') {
+              data = fileData.split('\n').map((row) => {
+                const [name, age] = row.split(',');
+                return { name, age: parseInt(age) };
+              });
+            } else {
+              data = JSON.parse(fileData);
+            }
+
+            //TODO add importing mongodb process
+            // import users to mongodb
+            // const respone = await fetch('users/user_add',{
+            //   method: 'POST',
+            //   body: JSON.stringify(data)
+            // });
+
+            // // Save the document to MongoDB
+            // await fetch('/upload', {
+            //       method: 'POST',
+            //       body: JSON.stringify(data)
+            //     });
+
+          } catch (err) {
+            console.error('Error loading file:', err);
+          }
+        }
+
+        // async function paginateUsers(){
+        //   const res= await fetch('/users/pagination');
+        //   return users = await res.json();}
+
+      const totalItems = 100; // total number of items
+      const itemsPerPage = 10; // items per page
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+      let currentPage = 1;
+
+      function renderPagination() {
+        let users = <%- JSON.stringify(users) %>;
+          const paginationContainer = document.getElementById('pagination-container');
+          paginationContainer.innerHTML = '';
+
+          const ul = document.createElement('ul');
+          ul.className = 'pagination';
+
+          let url = '../users';
+          let i = 1;
+          while (url!=null) {
+            const response = await fetch(url);
+            const data = await response.json();
+              const li = document.createElement('li');
+              const a = document.createElement('a');
+              a.href = data.next;
+              a.textContent = i;
+              a.className = currentPage === i ? 'active' : '';
+
+              a.addEventListener('click', (event) => {
+                  event.preventDefault();
+                  currentPage = i;
+                  renderPagination();
+                  // Add code to fetch and display items for the current page here
+              });
+
+              li.appendChild(a);
+              ul.appendChild(li);
+              i++;
           }
 
-          // Write the data to the selected file
-          const fileStream = await fileHandle.createWritable();
-          await fileStream.write(fileData);
-          await fileStream.close();
-
-          console.log(`File saved as ${fileHandle.name} successfully!`);
-        } catch (err) {
-          console.error('Error saving file:', err);
-        }
+          paginationContainer.appendChild(ul);
       }
 
-      // Function to load data from a CSV or JSON file
-      async function loadData() {
-        try {
-          // Create a new file picker dialog
-          const [fileHandle] = await window.showOpenFilePicker({
-            types: [
-              {
-                description: 'Comma-Separated Values',
-                accept: { 'text/csv': ['.csv'] },
-              },
-              {
-                description: 'JSON Files',
-                accept: { 'application/json': ['.json'] },
-              },
-            ],
-          });
-
-          // Read the file contents
-          const file = await fileHandle.getFile();
-          const fileData = await file.text();
-
-          // Determine the file type based on the selected file extension
-          const fileType = fileHandle.name.endsWith('.csv') ? 'csv' : 'json';
-
-          // Parse the file data based on the file type
-          let data;
-          if (fileType === 'csv') {
-            data = fileData.split('\n').map((row) => {
-              const [name, age] = row.split(',');
-              return { name, age: parseInt(age) };
-            });
-          } else {
-            data = JSON.parse(fileData);
-          }
-
-          //TODO add importing mongodb process
-          // import users to mongodb
-          // const respone = await fetch('users/user_add',{
-          //   method: 'POST',
-          //   body: JSON.stringify(data)
-          // });
-
-          // // Save the document to MongoDB
-          // await fetch('/upload', {
-          //       method: 'POST',
-          //       body: JSON.stringify(data)
-          //     });
-
-        } catch (err) {
-          console.error('Error loading file:', err);
-        }
-      }
-
-      async function paginateUsers(){
-        const res= await fetch('/users/pagination');
-        return users = await res.json();}
+      renderPagination();
     </script>
   </body>
 </html>

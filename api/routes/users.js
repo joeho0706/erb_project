@@ -12,6 +12,29 @@ const {
   bodyArray,
 } = require('../middleware/users');
 
+router.get('/pokemon', async (req, res) => {
+  const limit = 20; // Number of Pokémon per page
+  const offset = req.query.page ? (req.query.page - 1) * limit : 0; // Calculate offset
+
+  try {
+    const response = await fetch(
+      `https://pokeapi.co/api/v2/pokemon?limit=${limit}&offset=${offset}`
+    );
+    const data = await response.json();
+    const { results, count } = response.data;
+    const totalPages = Math.ceil(count / limit); // Calculate total pages
+
+    res.render('pokemon', {
+      pokemons: results,
+      currentPage: parseInt(req.query.page) || 1,
+      totalPages,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error fetching data');
+  }
+});
+
 /* GET users listing. */
 router.get('/', async (req, res, next) => {
   try {
