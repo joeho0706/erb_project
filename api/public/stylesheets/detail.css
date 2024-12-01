@@ -1,0 +1,22 @@
+p {
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+strong {
+  font-weight: bold;
+}
+
+a {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #4caf50; /* Green */
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+a:hover {
+  background-color: #45a049;
+}

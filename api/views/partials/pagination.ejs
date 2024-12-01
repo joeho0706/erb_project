@@ -1,0 +1,26 @@
+<head>
+  <link rel="stylesheet" type="text/css" href="../stylesheets/pagination.css" />
+</head>
+<div class="pagination">
+  <% if (currentPage > 1) { %>
+  <a href="?page=<%= currentPage - 1 %>">&laquo; Previous</a>
+  <% } %> <% const range = 8; %> <% const halfRange = Math.floor(range / 2); %>
+  <% const startPage = Math.max(1, currentPage - halfRange); %> <% const endPage
+  = Math.min(totalPages, currentPage + halfRange); %> <% if (startPage > 1) { %>
+  <a href="?page=1">1</a>
+  <% if (startPage > 2) { %>
+  <span>...</span>
+  <% } %> <% } %> <% for (let i = startPage; i <= endPage; i++) { %>
+  <a href="?page=<%= i %>" class="<%= i === currentPage ? 'active' : '' %>"
+    ><%= i %></a
+  >
+  <% } %> <% if (endPage < totalPages) { %> <% if (endPage < totalPages - 1) {
+  %>
+  <span>...</span>
+  <% } %>
+  <a href="?page=<%= totalPages %>"><%= totalPages %></a>
+  <% } %> <% if (currentPage < totalPages) { %>
+  <a href="?page=<%= currentPage + 1 %>">Next &raquo;</a>
+  <% } %>
+</div>
+<div class="pagination-spacer"></div>

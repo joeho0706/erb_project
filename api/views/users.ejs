@@ -1,0 +1,102 @@
+<%- include('layout') %>
+<link rel="stylesheet" type="text/css" href="../stylesheets/users.css" />
+<div style="display: flex; justify-content: space-between; align-items: end">
+  <h1>Users</h1>
+  <div>
+    <button onclick="generateFakeUsers()" class="generate-fake-users">
+      Generate Fake Users
+    </button>
+    <button onclick="deleteAllUsers()" class="delete-all-users">
+      Delete All Users
+    </button>
+  </div>
+</div>
+<div class="table-container">
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <a
+            href="?sort=_id&order=<%= order === 'asc' && sort === '_id' ? 'desc' : 'asc' %>"
+          >
+            ID <% if (sort === '_id') { %> <% if (order === 'asc') { %> ▲ <% }
+            else { %> ▼ <% } %> <% } %>
+          </a>
+        </th>
+        <th>
+          <a
+            href="?sort=username&order=<%= order === 'asc' && sort === 'username' ? 'desc' : 'asc' %>"
+          >
+            Username <% if (sort === 'username') { %> <% if (order === 'asc') {
+            %> ▲ <% } else { %> ▼ <% } %> <% } %>
+          </a>
+        </th>
+        <th>
+          <a
+            href="?sort=email&order=<%= order === 'asc' && sort === 'email' ? 'desc' : 'asc' %>"
+          >
+            Email <% if (sort === 'email') { %> <% if (order === 'asc') { %> ▲
+            <% } else { %> ▼ <% } %> <% } %>
+          </a>
+        </th>
+        <th>
+          <a
+            href="?sort=createdAt&order=<%= order === 'asc' && sort === 'createdAt' ? 'desc' : 'asc' %>"
+          >
+            Created At <% if (sort === 'createdAt') { %> <% if (order === 'asc')
+            { %> ▲ <% } else { %> ▼ <% } %> <% } %>
+          </a>
+        </th>
+        <th>
+          <a
+            href="?sort=updatedAt&order=<%= order === 'asc' && sort === 'updatedAt' ? 'desc' : 'asc' %>"
+          >
+            Updated At <% if (sort === 'updatedAt') { %> <% if (order === 'asc')
+            { %> ▲ <% } else { %> ▼ <% } %> <% } %>
+          </a>
+        </th>
+        <th>Actions</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% users.forEach(function(user) { %>
+      <tr>
+        <td><%= user._id %></td>
+        <td><%= user.username %></td>
+        <td><%= user.email %></td>
+        <td><%= new Date(user.createdAt).toLocaleString() %></td>
+        <td><%= new Date(user.updatedAt).toLocaleString() %></td>
+        <td>
+          <form
+            action="/users/<%= user._id %>/edit"
+            method="get"
+            style="display: inline"
+          >
+            <button type="submit">Edit</button>
+          </form>
+          <form
+            action="/users/<%= user._id %>"
+            method="get"
+            style="display: inline"
+          >
+            <button type="submit" class="detail">Detail</button>
+          </form>
+        </td>
+        <td>
+          <form
+            action="/users/<%= user._id %>?_method=DELETE"
+            method="POST"
+            style="display: inline"
+            onsubmit="return confirmDelete();"
+          >
+            <button type="submit" class="delete">Delete</button>
+          </form>
+        </td>
+      </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
+<%- include('./partials/pagination') %>
+<script src="../javascripts/users.js"></script>

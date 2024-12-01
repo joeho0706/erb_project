@@ -1,0 +1,40 @@
+/* 分頁導航樣式 */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f4f4f4;
+  padding: 10px 0;
+  border-top: 1px solid #ccc;
+  z-index: 1000;
+}
+
+.pagination a,
+.pagination span {
+  color: #4caf50; /* Green */
+  padding: 10px 20px;
+  margin: 0 5px;
+  text-decoration: none;
+  border: 1px solid #4caf50;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.pagination a.active {
+  background-color: #4caf50;
+  color: white;
+}
+
+.pagination a:hover {
+  background-color: #45a049;
+  border-color: #45a049;
+}
+
+/* 空白區域，確保內容不被分頁導航遮擋 */
+.pagination-spacer {
+  height: 60px; /* 確保高度與分頁導航一致 */
+}

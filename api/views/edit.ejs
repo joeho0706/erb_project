@@ -1,0 +1,21 @@
+<%- include('layout') %>
+<link rel="stylesheet" type="text/css" href="../stylesheets/edit.css" />
+<h1>Edit User</h1>
+<% if (errors) { %>
+<ul>
+  <% errors.forEach(function(error) { %>
+  <li><%= error.msg %></li>
+  <% }); %>
+</ul>
+<% } %>
+<form action="/users/<%= user._id %>?_method=PUT" method="POST">
+  <input type="text" name="username" value="<%= user.username %>" required />
+  <input
+    type="password"
+    name="password"
+    value="<%= user.password %>"
+    required
+  />
+  <input type="email" name="email" value="<%= user.email %>" required />
+  <button type="submit">Update User</button>
+</form>

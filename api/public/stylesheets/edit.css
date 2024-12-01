@@ -1,0 +1,56 @@
+/* 表單容器樣式 */
+.form-container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background: #d9c3b9;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+}
+
+/* 標題樣式 */
+h1 {
+  font-size: 24px;
+  color: #4a3528;
+}
+
+/* 標籤樣式 */
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: #4a3528;
+}
+
+/* 輸入框樣式 */
+input[type='text'],
+input[type='password'],
+input[type='email'] {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border: 1px solid #b48a6e;
+  border-radius: 5px;
+  background: #e5e1e2;
+  color: #4a3528;
+}
+
+/* 按鈕樣式 */
+button {
+  background: linear-gradient(to bottom, #b48a6e, #4a3528);
+  border: none;
+  color: #e5e1e2;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+button:hover {
+  background: linear-gradient(to bottom, #4a3528, #b48a6e);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}

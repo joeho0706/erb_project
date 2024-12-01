@@ -1,0 +1,12 @@
+<%- include('layout.ejs')%>
+<link rel="stylesheet" type="text/css" href="/styles/detail.css" />
+<h1>User Details</h1>
+<p><strong>Username:</strong> <%= user.username %></p>
+<p><strong>Email:</strong> <%= user.email %></p>
+<p>
+  <strong>Created At:</strong> <%= new Date(user.createdAt).toLocaleString() %>
+</p>
+<p>
+  <strong>Updated At:</strong> <%= new Date(user.updatedAt).toLocaleString() %>
+</p>
+<a href="/users">Back to Users List</a>
