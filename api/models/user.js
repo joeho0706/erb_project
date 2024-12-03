@@ -8,8 +8,7 @@ const userSchema = new mongoose.Schema(
     password: { type: String, min :{ value: 5, message: 'Password must be at least 5 characters long, but got {VALUE}' }, required: true, sparse: true },
     email: { type: String, required: true, unique: true, validate: { validator: function (v) { return /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v); }, message: props => `${props.value} is not a valid email address!` }, immutable: true},
 
-    googleId: { type: String, immutable: true },
-    facebookId: { type: String, immutable: true },
+    socialMediaId: { type: String, immutable: true },
     name: { type: String, min :{ value: 3, message: 'Name must be at least 3 characters long, but got {VALUE}' }, required: true },
     thumbnail: { type: String },
     role: { type: String, required: true, default: 'user' },
