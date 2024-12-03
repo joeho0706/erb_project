@@ -12,7 +12,7 @@ const { faker } = require('@faker-js/faker');
 // });
 
 // 生成假數據
-router.get('/generate-fake-users',  userValidationRules(), async (req, res) => {
+router.get('/generate-fake-users', async (req, res) => {
   const count = parseInt(req.query.count) || 1; // 默認生成 1 個假用戶
 
   try {

@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema(
     name: { type: String, min :{ value: 3, message: 'Name must be at least 3 characters long, but got {VALUE}' }, required: true },
     thumbnail: { type: String },
     role: { type: String, required: true, default: 'user' },
+    loginMethod: { type: String, required: true, enum: { values: ['facebook', 'google', 'local'], message: 'Login method must be one of: facebook, google, local' }},
   },
   {
     timestamps: true, // 自動添加 createdAt 和 updatedAt 字段
