@@ -1,20 +1,16 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const methodOverride = require('method-override');
+router.use(methodOverride('_method'));
 const { validationResult } = require('express-validator');
-// const { ObjectId } = require('mongodb');
 const User = require('../models/user');
 const { userValidationRules } = require('../validators/user');
 const { faker } = require('@faker-js/faker');
+const bcrypt = require('bcrypt');
 
-// /* GET users listing. */
-// router.get('/', function(req, res, next) {
-//   res.send('respond with a resource');
-// });
-
-// 生成假數據
-router.get('/generate-fake-users',  userValidationRules(), async (req, res) => {
-  const count = parseInt(req.query.count) || 1; // 默認生成 1 個假用戶
-
+// Generate fake users
+router.get('/generate-fake-users', async (req, res) => {
+  const count = parseInt(req.query.count) || 1; // Default to generating 1 fake user
   try {
     for (let i = 0; i < count; i++) {
       const fakeUser = new User({
@@ -25,24 +21,24 @@ router.get('/generate-fake-users',  userValidationRules(), async (req, res) => {
         thumbnail: faker.image.avatar(),
         role: 'user',
       });
-
-      await fakeUser.save(); // 使用Mongoose保存假用戶
+      await fakeUser.save();
     }
     res.redirect('/users');
   } catch (error) {
     console.error(`Error inserting fake users: ${error}`);
-    res.status(500).send(`${error}`);
+    res.status(500).send('Error generating fake users');
   }
 });
 
-// 顯示所有用戶，支持分頁、限制返回用戶數量和排序
+// View all users, with pagination and sorting
 router.get('/', async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10; // 默認每頁顯示10個用戶
-  const sort = req.query.sort || 'createdAt'; // 默認按創建時間排序
-  const order = req.query.order === 'desc' ? 'desc' : 'asc'; // 默認升序排列
+  const limit = parseInt(req.query.limit) || 10; // Default to 10 users per page
+  const sort = req.query.sort || 'createdAt'; // Default sort by creation time
+  const order = req.query.order === 'desc' ? 'desc' : 'asc'; // Default to ascending order
   const sortOrder = order === 'desc' ? -1 : 1;
   const skip = (page - 1) * limit;
+
   try {
     const users = await User.find()
       .sort({ [sort]: sortOrder })
@@ -53,53 +49,62 @@ router.get('/', async (req, res) => {
     const totalPages = Math.ceil(totalUsers / limit);
     res.render('users', { users, currentPage: page, totalPages, sort, order });
   } catch (error) {
-    res.status(500).send(error);
+    console.error(`Error fetching users: ${error}`);
+    res.status(500).send('Error fetching users');
   }
 });
 
-// 顯示添加用戶表單
+// Display new user form
 router.get('/new', (req, res) => {
   res.render('new');
 });
 
-// 添加新用戶
+// Add a new user
 router.post('/', userValidationRules(), async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const newUser = new User(req.body);
+  // Hash password before saving user
+  const hashedPassword = await bcrypt.hash(req.body.password, 10);
+  const newUser = new User({ ...req.body, password: hashedPassword });
+
   try {
-    await newUser.save(); // 使用Mongoose保存用戶
+    await newUser.save();
     res.redirect('/users');
   } catch (error) {
-    res.status(400).send(error);
+    console.error(`Error saving user: ${error}`);
+    res.status(400).send('Error saving user');
   }
 });
 
-// 刪除所有用戶
+// Delete all users
 router.delete('/', async (req, res) => {
   try {
     await User.deleteMany({});
-    // res.redirect('/users');
     res.send('All users have been deleted.');
   } catch (error) {
-    res.status(500).send(error);
+    console.error(`Error deleting users: ${error}`);
+    res.status(500).send('Error deleting users');
   }
 });
 
-// 顯示編輯用戶表單
+// Show the edit form for a user
 router.get('/:id/edit', async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
     res.render('edit', { user });
   } catch (error) {
-    res.status(400).send(error);
+    console.error(`Error fetching user for edit: ${error}`);
+    res.status(400).send('Error fetching user for edit');
   }
 });
 
-// 顯示用戶詳細信息
+// Show user details
 router.get('/:id', async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -108,35 +113,55 @@ router.get('/:id', async (req, res) => {
     }
     res.render('detail', { user });
   } catch (error) {
-    res.status(400).send(error);
+    console.error(`Error fetching user details: ${error}`);
+    res.status(400).send('Error fetching user details');
   }
 });
 
-// 更新用戶
-router.put('/:id', userValidationRules(), async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+// Update user information (PUT request)
+router.put('/:id', async (req, res) => {
+  // const errors = validationResult(req);
+  // if (!errors.isEmpty()) {
+  //   return res.status(400).json({ errors: errors.array() });
+  // }
+
+  // Extract immutable fields and keep them unchanged
+  const { googleId, facebookId, thumbnail, password, ...updatableData } = req.body;
+
+  // If password is being updated, hash it
+  if (password) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    updatableData.password = hashedPassword;
   }
 
   try {
-    await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, updatableData, {
+      new: true, // Return the updated document
+      runValidators: true, // Ensure validation before saving
     });
+
+    if (!updatedUser) {
+      return res.status(404).send('User not found');
+    }
+
     res.redirect('/users');
   } catch (error) {
-    res.status(400).send(error);
+    console.error(`Error updating user: ${error.message}`);
+    res.status(400).send('There was an error updating the user. Please try again.');
   }
 });
 
-// 刪除用戶
+// Delete a user
 router.delete('/:id', async (req, res) => {
   try {
-    await User.findByIdAndDelete(req.params.id);
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
     res.redirect('/users');
   } catch (error) {
-    res.status(500).send(error);
+    console.error(`Error deleting user: ${error}`);
+    res.status(500).send('Error deleting user');
   }
 });
 

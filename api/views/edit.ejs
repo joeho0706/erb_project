@@ -1,21 +1,160 @@
-<%- include('layout') %>
-<link rel="stylesheet" type="text/css" href="../stylesheets/edit.css" />
-<h1>Edit User</h1>
-<% if (errors) { %>
-<ul>
-  <% errors.forEach(function(error) { %>
-  <li><%= error.msg %></li>
-  <% }); %>
-</ul>
-<% } %>
-<form action="/users/<%= user._id %>?_method=PUT" method="POST">
-  <input type="text" name="username" value="<%= user.username %>" required />
-  <input
-    type="password"
-    name="password"
-    value="<%= user.password %>"
-    required
-  />
-  <input type="email" name="email" value="<%= user.email %>" required />
-  <button type="submit">Update User</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit User Page</title>
+  <link rel="stylesheet" href="/stylesheets/style.css"> <!-- Assuming you have a CSS file -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #007BFF;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      text-decoration: none;
+      color: #007BFF;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .password-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-toggle {
+      cursor: pointer;
+      font-size: 18px;
+      margin-left: 10px;
+    }
+
+    .immutable-field {
+      background-color: #f0f0f0;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Edit User Page</h1>
+    <form action="/users/<%= user._id %>?_method=PUT" method="POST">
+
+      <!-- Disabled fields (immutable) -->
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" value="<%= user.username %>" required disabled>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" value="<%= user.email %>" required disabled>
+
+      <!-- Immutable fields -->
+      <label for="googleId">Google ID</label>
+      <input type="text" id="googleId" name="googleId" value="<%= user.googleId %>" disabled class="immutable-field">
+
+      <label for="facebookId">Facebook ID</label>
+      <input type="text" id="facebookId" name="facebookId" value="<%= user.facebookId %>" disabled class="immutable-field">
+
+      <label for="thumbnail">Thumbnail</label>
+      <input type="text" id="thumbnail" name="thumbnail" value="<%= user.thumbnail %>" disabled class="immutable-field">
+
+      <!-- Name is required and editable -->
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" value="<%= user.name %>" required minlength="3" maxlength="50">
+
+      <!-- Password is editable -->
+      <label for="password">Password</label>
+      <div class="password-container">
+        <input type="password" id="password" name="password" minlength="5" placeholder="Enter new password" required>
+        <span class="password-toggle" onclick="togglePassword()">👁️👁️</span>
+      </div>
+
+      <!-- Role (editable) -->
+      <label for="role">Role</label>
+      <select id="role" name="role" required>
+        <option value="user" <%= user.role === 'user' ? 'selected' : '' %>>User</option>
+        <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+        <option value="moderator" <%= user.role === 'moderator' ? 'selected' : '' %>>Moderator</option>
+      </select>
+
+      <button type="submit">Save Changes</button>
+    </form>
+    <a class="back-link" href="/users">Back to User List</a>
+  </div>
+
+  <script>
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const passwordToggle = document.querySelector('.password-toggle');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        passwordToggle.textContent = '🙈🙈';
+      } else {
+        passwordInput.type = 'password';
+        passwordToggle.textContent = '👁️👁️';
+      }
+    }
+  </script>
+</body>
+
+</html>
