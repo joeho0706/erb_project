@@ -116,16 +116,16 @@
                     <option value="admin">Admin</option> 
                 </select> <div class="error" id="roleError"></div> </div> 
             <div class="form-group"> <label for="name">Name (At least 3 characters)</label> 
-                <input type="text" id="name" name="name" required pattern=".{3,}"> 
+                <input type="text" minlength="3" id="name" name="name" required > 
                 <div class="error" id="nameError"></div> </div> 
             <div class="form-group"> <label for="username">Username (At least 3 characters)</label> 
-                <input type="text" id="username" name="username" required pattern=".{3,}"> 
+                <input type="text" minlength="3" id="username" name="username" required > 
                 <div class="error" id="usernameError"></div> </div> 
             <div class="form-group"> <label for="email">Email</label> 
                 <input type="email" id="email" name="email" required> 
                 <div class="error" id="emailError"></div> </div> 
             <div class="form-group"> <label for="password">Password (At least 5 characters)</label> 
-                <input type="password" id="password" name="password" required pattern=".{5,}"> </div> 
+                <input type="password" minlength="5" id="password" name="password" required> </div> 
                 <div class="form-group"> <label for="confirm-password">Confirm Password</label> 
                 <input type="password" id="confirm-password" name="confirm-password" required> </div> 
                 <button type="submit">Add New User</button> </form>
