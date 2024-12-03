@@ -12,7 +12,7 @@ const { faker } = require('@faker-js/faker');
 // });
 
 // 生成假數據
-router.get('/generate-fake-users', async (req, res) => {
+router.get('/generate-fake-users',  userValidationRules(), async (req, res) => {
   const count = parseInt(req.query.count) || 1; // 默認生成 1 個假用戶
 
   try {
@@ -21,6 +21,9 @@ router.get('/generate-fake-users', async (req, res) => {
         username: faker.internet.username(),
         password: faker.internet.password(),
         email: faker.internet.email(),
+        name: faker.person.fullName(),
+        thumbnail: faker.image.avatar(),
+        role: 'user',
       });
 
       await fakeUser.save(); // 使用Mongoose保存假用戶
@@ -28,7 +31,7 @@ router.get('/generate-fake-users', async (req, res) => {
     res.redirect('/users');
   } catch (error) {
     console.error(`Error inserting fake users: ${error}`);
-    res.status(500).send('Error generating fake users');
+    res.status(500).send(`${error}`);
   }
 });
 
