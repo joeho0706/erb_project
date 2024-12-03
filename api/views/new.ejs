@@ -1,10 +1,135 @@
-<%- include('layout') %>
-<link rel="stylesheet" type="text/css" href="../stylesheets/new.css" />'
-<h1>Add New User</h1>
+<!DOCTYPE html>
+<html lang="en">
 
-<form action="/users" method="POST">
-  <input type="text" name="username" placeholder="Username" required />
-  <input type="password" name="password" placeholder="Password" required />
-  <input type="email" name="email" placeholder="Email" required />
-  <button type="submit">Add User</button>
-</form>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New User</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+        }
+
+        .form-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.875rem;
+        }
+
+        .success {
+            color: green;
+            font-size: 0.875rem;
+        }
+
+        .submit-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            opacity: 0.6;
+            /* Initially disabled */
+            pointer-events: none;
+            /* Initially disabled */
+        }
+
+        .submit-btn.enabled {
+            opacity: 1;
+            /* Enabled */
+            pointer-events: auto;
+            /* Enabled */
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <script> 
+    function validateForm(event) { 
+        const username = document.getElementById("username").value; 
+        const usernameError = document.getElementById("usernameError"); 
+        const name = document.getElementById("name").value; 
+        const nameError = document.getElementById("nameError"); 
+        const password = document.getElementById("password").value; 
+        const passwordError = document.getElementById("passwordError"); 
+        const confirmPassword = document.getElementById("confirm-password").value; 
+        let valid = true; 
+    // Check if name is at least 3 characters 
+    if (name.length < 3) { nameError.textContent = "Name must be at least 3 characters"; 
+    valid = false; 
+    } else { 
+        nameError.textContent = ""; } 
+    // Check if username is at least 3 characters 
+    if (username.length < 3) { usernameError.textContent = "Username must be at least 3 characters"; 
+    valid = false; 
+    } else { 
+        usernameError.textContent = ""; } 
+     // Check if passwords match 
+    if (password !== confirmPassword) {
+        alert("Passwords do not match. Please try again."); 
+        valid = false; } 
+    if (!valid) { event.preventDefault(); } } 
+    </script>
+</head>
+
+<body>
+    <div class="form-container">
+        <h2>Add New User</h2>
+        <form action="/users" method="POST" onsubmit="validateForm(event)"> 
+            <div class="form-group"> <label for="role">Role</label> 
+                <select id="role" name="role" required> 
+                    <option value="user">User</option> 
+                    <option value="admin">Admin</option> 
+                </select> <div class="error" id="roleError"></div> </div> 
+            <div class="form-group"> <label for="name">Name (At least 3 characters)</label> 
+                <input type="text" id="name" name="name" required pattern=".{3,}"> 
+                <div class="error" id="nameError"></div> </div> 
+            <div class="form-group"> <label for="username">Username (At least 3 characters)</label> 
+                <input type="text" id="username" name="username" required pattern=".{3,}"> 
+                <div class="error" id="usernameError"></div> </div> 
+            <div class="form-group"> <label for="email">Email</label> 
+                <input type="email" id="email" name="email" required> 
+                <div class="error" id="emailError"></div> </div> 
+            <div class="form-group"> <label for="password">Password (At least 5 characters)</label> 
+                <input type="password" id="password" name="password" required pattern=".{5,}"> </div> 
+                <div class="form-group"> <label for="confirm-password">Confirm Password</label> 
+                <input type="password" id="confirm-password" name="confirm-password" required> </div> 
+                <button type="submit">Add New User</button> </form>
+    </div>
+</body>
+
+</html>

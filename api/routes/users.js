@@ -63,11 +63,11 @@ router.get('/new', (req, res) => {
 });
 
 // 添加新用戶
-router.post('/', userValidationRules(), async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+router.post('/', async (req, res) => {
+  // const errors = validationResult(req);
+  // if (!errors.isEmpty()) {
+  //   return res.status(400).json({ errors: errors.array() });
+  // }
 
   const newUser = new User(req.body);
   try {

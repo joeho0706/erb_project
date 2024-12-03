@@ -5,6 +5,9 @@ const userValidationRules = () => {
     body('username')
       .isLength({ min: 3 })
       .withMessage('Username must be at least 3 characters long'),
+    // body('email')
+    //   .matches(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)
+    //   .withMessage('Email must be a valid email address'),
     body('password')
       .isLength({ min: 5 })
       .withMessage('Password must be at least 5 characters long'),
@@ -26,6 +29,14 @@ const userValidationRules = () => {
       .isLength({ min: 3 })
       .withMessage('Thumbnail must be at least 3 characters long'),
     body('role').notEmpty().withMessage('Role is required'),
+    // body('confirm-password')
+    //   .custom((value, { req }) => {
+    //     if (value !== req.body.password) {
+    //       throw new Error('Confirm Password does not match Password');
+    //     }
+    //     return true;
+    
+    //   })
   ];
 };
 
