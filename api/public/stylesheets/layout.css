@@ -7,10 +7,14 @@ body {
 nav {
   background-color: #333;
   padding: 10px;
-  position: fixed; /* 固定導航欄 */
-  width: 100%;
-  top: 0;
-  z-index: 1000; /* 確保導航欄在頂部 */
+}
+
+.navbar-title {
+  font-family: 'Anton', sans-serif;
+  font-size: 24px;
+  color: white;
+  display: inline-block;
+  margin-right: 20px;
 }
 
 nav ul {
@@ -18,6 +22,7 @@ nav ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
+  display: inline;
 }
 
 nav ul li {

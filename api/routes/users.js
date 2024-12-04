@@ -5,6 +5,9 @@ const { validationResult } = require('express-validator');
 const User = require('../models/user');
 const { userValidationRules } = require('../validators/user');
 const { faker } = require('@faker-js/faker');
+const path = require('path');
+const fs = require('fs');
+const upload = require('../config/multerConfig');
 
 // /* GET users listing. */
 // router.get('/', function(req, res, next) {
@@ -39,7 +42,7 @@ router.get('/generate-fake-users', async (req, res) => {
 router.get('/', async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10; // 默認每頁顯示10個用戶
-  const sort = req.query.sort || 'createdAt'; // 默認按創建時間排序
+  const sort = req.query.sort || null; // 默認沒有排序
   const order = req.query.order === 'desc' ? 'desc' : 'asc'; // 默認升序排列
   const sortOrder = order === 'desc' ? -1 : 1;
   const skip = (page - 1) * limit;
@@ -50,6 +53,32 @@ router.get('/', async (req, res) => {
       .limit(limit)
       .exec();
     const totalUsers = await User.countDocuments();
+    const totalPages = Math.ceil(totalUsers / limit);
+    res.render('users', { users, currentPage: page, totalPages, sort, order });
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+
+// 搜索用戶
+router.get('/search', async (req, res) => {
+  const field = req.query.field;
+  const query = req.query.query;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10; // 默認每頁顯示10個用戶
+  const sort = req.query.sort || null; // 默認沒有排序
+  const order = req.query.order === 'desc' ? 'desc' : 'asc'; // 默認升序排列
+  const sortOrder = order === 'desc' ? -1 : 1;
+  const skip = (page - 1) * limit;
+  let searchCriteria = {};
+  searchCriteria[field] = { $regex: query, $options: 'i' };
+  try {
+    const users = await User.find(searchCriteria)
+      .sort({ [sort]: sortOrder })
+      .skip(skip)
+      .limit(limit)
+      .exec();
+    const totalUsers = await User.countDocuments(searchCriteria);
     const totalPages = Math.ceil(totalUsers / limit);
     res.render('users', { users, currentPage: page, totalPages, sort, order });
   } catch (error) {
@@ -86,6 +115,26 @@ router.delete('/', async (req, res) => {
     res.send('All users have been deleted.');
   } catch (error) {
     res.status(500).send(error);
+  }
+});
+
+// 導出用戶數據為 JSON
+router.get('/export', async (req, res) => {
+  try {
+    const users = await User.find().exec();
+    const jsonUsers = JSON.stringify(users, null, 2);
+    const filePath = path.join(
+      __dirname,
+      '..',
+      'public',
+      'exports',
+      'users.json'
+    ); // 確保目錄存在
+    fs.mkdirSync(path.dirname(filePath), { recursive: true }); // 將 JSON 數據寫入文件
+    fs.writeFileSync(filePath, jsonUsers, 'utf8');
+    res.download(filePath, 'users.json');
+  } catch (error) {
+    res.status(500).send('Error exporting users');
   }
 });
 

@@ -1,3 +1,37 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+.search-form-container {
+  display: inline-block;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.search-form-container form {
+  display: flex;
+  align-items: center;
+}
+
+.search-form-container select,
+.search-form-container input {
+  margin-right: 10px;
+  padding: 5px;
+}
+
+.search-form-container button {
+  padding: 5px 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.search-form-container button:hover {
+  background-color: #45a049;
+}
+
 /* 表格樣式 */
 table {
   width: 100%;

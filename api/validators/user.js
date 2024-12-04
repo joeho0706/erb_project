@@ -1,5 +1,6 @@
 const { body } = require('express-validator');
 
+// deprecated
 const userValidationRules = () => {
   return [
     body('username')
