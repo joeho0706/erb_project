@@ -13,6 +13,7 @@ dotenv.config();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var avatarRouter = require('./routes/avatars');
 
 var app = express();
 
@@ -66,6 +67,7 @@ app.use(methodOverride('_method'));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/avatars', avatarRouter);
 
 app.listen(() => {
   console.log(`Server is running on port ${PORT}`);
