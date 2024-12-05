@@ -19,7 +19,7 @@ router.post('/register', async (req, res) => {
     }
     const loginMethod="local";
     const newUser = new User({ loginMethod, email, username, password, name });
-    await newUser.save();  // TODOneed to be changed, use "new" api
+    await newUser.save(); 
     res.redirect('/login');
   } catch (err) {
     console.error(err);

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Register</title>
-  <link rel="stylesheet" href="/auth.css">
+  <link rel="stylesheet" href="../stylesheets/auth.css">
 </head>
 <body>
   <div class="container">
@@ -25,8 +25,25 @@
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required>
       </div>
+      <div>
+        <label for="confirmPassword">Confirm Password:</label> 
+        <input type="password" id="confirmPassword" required>
+      </div>
       <button type="submit">Register</button>
     </form>
-  </div>
+  </div>  
+  
+  <script>
+    function validatePassword() {
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      if (password !== confirmPassword) {
+        alert('Passwords do not match.');
+        return false;
+      }
+      return true;
+    }
+  </script>
+
 </body>
 </html>
