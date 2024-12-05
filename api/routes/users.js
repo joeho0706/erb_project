@@ -38,40 +38,20 @@ router.get('/generate-fake-users', async (req, res) => {
   }
 });
 
-// 顯示所有用戶，支持分頁、限制返回用戶數量和排序
+// 顯示或搜索用戶，支持分頁、限制返回用戶數量和單字段排序
 router.get('/', async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10; // 默認每頁顯示10個用戶
-  const sort = req.query.sort || null; // 默認沒有排序
+  const sort = req.query.sort || 'createdAt'; // 默認按創建時間排序
   const order = req.query.order === 'desc' ? 'desc' : 'asc'; // 默認升序排列
   const sortOrder = order === 'desc' ? -1 : 1;
   const skip = (page - 1) * limit;
-  try {
-    const users = await User.find()
-      .sort({ [sort]: sortOrder })
-      .skip(skip)
-      .limit(limit)
-      .exec();
-    const totalUsers = await User.countDocuments();
-    const totalPages = Math.ceil(totalUsers / limit);
-    res.render('users', { users, currentPage: page, totalPages, sort, order });
-  } catch (error) {
-    res.status(500).send(error);
-  }
-});
-
-// 搜索用戶
-router.get('/search', async (req, res) => {
   const field = req.query.field;
   const query = req.query.query;
-  const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 10; // 默認每頁顯示10個用戶
-  const sort = req.query.sort || null; // 默認沒有排序
-  const order = req.query.order === 'desc' ? 'desc' : 'asc'; // 默認升序排列
-  const sortOrder = order === 'desc' ? -1 : 1;
-  const skip = (page - 1) * limit;
   let searchCriteria = {};
-  searchCriteria[field] = { $regex: query, $options: 'i' };
+  if (field && query) {
+    searchCriteria[field] = { $regex: query, $options: 'i' };
+  }
   try {
     const users = await User.find(searchCriteria)
       .sort({ [sort]: sortOrder })
