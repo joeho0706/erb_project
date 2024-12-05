@@ -1,3 +1,4 @@
+<%- include('layout') %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,8 +6,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit User Page</title>
-  <link rel="stylesheet" href="/stylesheets/style.css"> <!-- Assuming you have a CSS file -->
+  <link rel="stylesheet" href="/stylesheets/layout.css">
   <style>
+    /* Existing Styles */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -89,9 +91,10 @@
       margin-left: 10px;
     }
 
-    .immutable-field {
-      background-color: #f0f0f0;
-      cursor: not-allowed;
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin-top: -10px;
     }
   </style>
 </head>
@@ -99,7 +102,7 @@
 <body>
   <div class="container">
     <h1>Edit User Page</h1>
-    <form action="/users/<%= user._id %>?_method=PUT" method="POST">
+    <form action="/users/<%= user._id %>?_method=PUT" method="POST" id="edit-user-form">
 
       <!-- Disabled fields (immutable) -->
       <label for="username">Username</label>
@@ -122,20 +125,28 @@
       <label for="name">Name</label>
       <input type="text" id="name" name="name" value="<%= user.name %>" required minlength="3" maxlength="50">
 
+      <!-- Current Password is required -->
+      <label for="currentPassword">Current Password</label>
+      <input type="password" id="currentPassword" name="currentPassword" required placeholder="Enter your current password">
+
       <!-- Password is editable -->
-      <label for="password">Password</label>
+      <label for="password">New Password</label>
+      <input type="password" id="password" name="password" minlength="5" placeholder="Enter new password" aria-describedby="passwordHelp">
+
+      <!-- Confirm New Password -->
+      <label for="confirmPassword">Confirm New Password</label>
+      <input type="password" id="confirmPassword" name="confirmPassword" minlength="5" placeholder="Confirm new password" aria-describedby="passwordHelp">
+
+      <!-- Password visibility toggle -->
       <div class="password-container">
-        <input type="password" id="password" name="password" minlength="5" placeholder="Enter new password" required>
-        <span class="password-toggle" onclick="togglePassword()">👁️👁️</span>
+        <span id="passwordHelp" class="error-message" style="display: none;">Passwords must match and be at least 5 characters.</span>
+        <span id="togglePassword" class="password-toggle" style="cursor: pointer; color: #007BFF;">👁️</span>
       </div>
 
-      <!-- Role (editable) -->
-      <label for="role">Role</label>
-      <select id="role" name="role" required>
-        <option value="user" <%= user.role === 'user' ? 'selected' : '' %>>User</option>
-        <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>
-        <option value="moderator" <%= user.role === 'moderator' ? 'selected' : '' %>>Moderator</option>
-      </select>
+      <!-- Error message for password mismatch -->
+      <% if (typeof errorMessage !== 'undefined') { %>
+        <div class="error-message"><%= errorMessage %></div>
+      <% } %>
 
       <button type="submit">Save Changes</button>
     </form>
@@ -143,17 +154,49 @@
   </div>
 
   <script>
-    function togglePassword() {
-      const passwordInput = document.getElementById('password');
-      const passwordToggle = document.querySelector('.password-toggle');
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        passwordToggle.textContent = '🙈🙈';
-      } else {
-        passwordInput.type = 'password';
-        passwordToggle.textContent = '👁️👁️';
+    // Password visibility toggle
+    document.getElementById('togglePassword').addEventListener('click', function () {
+      const passwordField = document.getElementById('password');
+      const confirmPasswordField = document.getElementById('confirmPassword');
+      const type = passwordField.type === 'password' ? 'text' : 'password';
+      passwordField.type = type;
+      confirmPasswordField.type = type;
+      this.textContent = this.textContent === '👁️' ? '🙈' : '👁️'; // Toggle icon
+    });
+
+    // Handle confirmation prompt before submitting the form
+    document.getElementById('edit-user-form').addEventListener('submit', function (event) {
+      const currentPassword = document.getElementById('currentPassword').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const confirmPassword = document.getElementById('confirmPassword').value.trim();
+      const passwordError = document.getElementById('passwordHelp');
+
+      // Clear previous error message
+      passwordError.style.display = 'none';
+
+      // Check if the current password is filled
+      if (!currentPassword) {
+        passwordError.innerHTML = "Current password field must be filled out.";
+        passwordError.style.display = 'block';
+        event.preventDefault(); // Prevent form submission if field is empty
+        return;
       }
-    }
+
+      // Check if both password and confirmPassword fields are not empty
+      if (!password || !confirmPassword) {
+        passwordError.innerHTML = "Both new password and confirm password fields must be filled out.";
+        passwordError.style.display = 'block';
+        event.preventDefault(); // Prevent form submission if any field is empty
+        return;
+      }
+
+      // Check if the passwords match
+      if (password !== confirmPassword) {
+        passwordError.innerHTML = "Passwords do not match. Please try again.";
+        passwordError.style.display = 'block';
+        event.preventDefault(); // Prevent form submission if passwords don't match
+      }
+    });
   </script>
 </body>
 
