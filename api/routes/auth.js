@@ -8,24 +8,47 @@ router.get('/register', (req, res) => {
   res.render('register');
 });
 
-// Handle registration
-router.post('/register', async (req, res) => {
-  try {
-    const { email, username, password, name } = req.body;
 
-    // Validate that email and other fields are provided
+// Handle registration 
+router.post('/register', async (req, res) => { 
+  try {
+    const { email, username, password, confirmPassword, name } = req.body; 
+    // Validate that email and other fields are provided 
     if (!email || !username || !password || !name) {
-      return res.status(400).send('All fields are required');
-    }
-    const loginMethod="local";
-    const newUser = new User({ loginMethod, email, username, password, name });
+      return res.status(400).send('All fields are required'); 
+    } 
+    // Validate password and confirm password match 
+    if (password !== confirmPassword) { 
+      return res.render('register', { email, username, name }); 
+    } 
+    const loginMethod = "local"; 
+    const newUser = new User({ loginMethod, email, username, password, name }); 
     await newUser.save(); 
-    res.redirect('/login');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error registering new user');
-  }
-});
+    res.redirect('/login'); 
+  } catch (err) { 
+    console.error(err); 
+    res.render('register', { email: req.body.email, username: req.body.username, name: req.body.name });
+  } });
+
+
+// // Handle registration
+// router.post('/register', async (req, res) => {
+//   try {
+//     const { email, username, password, name } = req.body;
+
+//     // Validate that email and other fields are provided
+//     if (!email || !username || !password || !name) {
+//       return res.status(400).send('All fields are required');
+//     }
+//     const loginMethod="local";
+//     const newUser = new User({ loginMethod, email, username, password, name });
+//     await newUser.save(); 
+//     res.redirect('/login');
+//   } catch (err) {
+//     console.error(err);
+//     res.render("register");
+//   }
+// });
 
 // Local login
 router.post('/login', passport.authenticate('local', {
