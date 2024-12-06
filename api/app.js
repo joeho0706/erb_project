@@ -13,7 +13,7 @@ dotenv.config();
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var avatarRouter = require('./routes/avatars');
+var avatarsRouter = require('./routes/avatars');
 
 var app = express();
 
@@ -53,6 +53,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride('_method'));
+app.use(express.static(path.join(__dirname, 'avatars')));
 
 // // 等待 DB 連接成功後再處理請求
 // app.use((req, res, next) => {
@@ -67,7 +68,7 @@ app.use(methodOverride('_method'));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/avatars', avatarRouter);
+app.use('/avatars', avatarsRouter);
 
 app.listen(() => {
   console.log(`Server is running on port ${PORT}`);
