@@ -9,8 +9,14 @@ const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const ejsLayouts = require('express-ejs-layouts');
 
-// 加載環境變量
+// Load environment variables from .env
 dotenv.config();
+
+const session = require('express-session');
+const bodyParser = require('body-parser');
+const passport = require('passport');
+const flash = require('connect-flash');
+require('./config/passport')(passport);
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -21,10 +27,16 @@ var app = express();
 const PORT = process.env.PORT || 3000;
 
 // Connect to MongoDB using Mongoose
-mongoose.connect(process.env.DB_URL, {
-  //useNewUrlParser: true,  deprecated
-  //useUnifiedTopology: true,  deprecated
-});
+mongoose
+  .connect(process.env.DB_URL)
+  .then(() => {
+    console.log('Successfully connected to MongoDB');
+  })
+  .catch((err) => {
+    console.error('Connection error', err);
+    //useNewUrlParser: true,  deprecated
+    //useUnifiedTopology: true,  deprecated
+  });
 
 // // Connect to MongoDB using MongoClient
 // const client = new MongoClient('mongodb://localhost:27017');
@@ -58,6 +70,19 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride('_method'));
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+  session({
+    secret: 'erb_project', // Replace with your actual secret key
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false }, // Change to true for production
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
 // // 等待 DB 連接成功後再處理請求
 // app.use((req, res, next) => {
 //   if (!db) {
@@ -69,11 +94,28 @@ app.use(methodOverride('_method'));
 //   next();
 // });
 
+// Routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+app.use('/auth', require('./routes/auth'));
+app.get('/login', (req, res) => {
+  const messages = req.flash('error');
+  res.render('login', { messages });
+});
+
+app.get('/register', (req, res) => res.render('register'));
+
+app.get('/profile', (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.redirect('/login');
+  }
+  res.render('profile', { user: req.user });
+});
+
+// Start the server
 app.listen(() => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
 
 // catch 404 and forward to error handler
