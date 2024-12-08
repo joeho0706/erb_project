@@ -21,7 +21,6 @@ const userSchema = new mongoose.Schema(
         value: 5,
         message: 'Password must be at least 5 characters long, but got {VALUE}',
       },
-      required: true,
       sparse: true,
     },
     email: {
