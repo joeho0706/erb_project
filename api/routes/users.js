@@ -82,6 +82,7 @@ router.post('/', userValidationRules(), async (req, res) => {
   try {
     await newUser.save(); // 使用Mongoose保存用戶
     res.redirect('/users');
+    res.json({ message: 'User created successfully' });
   } catch (error) {
     res.status(400).send(error);
   }

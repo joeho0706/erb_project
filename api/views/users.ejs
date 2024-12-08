@@ -1,6 +1,13 @@
-<%- include('layout') %>
-<link rel="stylesheet" type="text/css" href="../stylesheets/users.css" />
-<div style="display: flex; justify-content: space-between; align-items: start">
+<!-- <%# include('layout') %> -->
+<link rel="stylesheet" type="text/css" href="../stylesheets/styles.css" />
+<div
+  style="
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    padding: 8px;
+  "
+>
   <h1 style="margin: 0">Users</h1>
   <div class="search-form-container">
     <form action="/users" method="get">
@@ -17,12 +24,12 @@
       <button type="submit">Search</button>
     </form>
   </div>
-  <div>
+  <div class="button-container">
     <button onclick="generateFakeUsers()" class="generate-fake-users">
-      Generate Fake Users
+      Fake Users
     </button>
     <button onclick="deleteAllUsers()" class="delete-all-users">
-      Delete All Users
+      Delete All
     </button>
     <button onclick="window.location.href='/users/export'" class="export-users">
       Export Users
@@ -90,7 +97,6 @@
           </a>
         </th>
         <th>Actions</th>
-        <th>Delete</th>
       </tr>
     </thead>
     <tbody>
@@ -109,24 +115,22 @@
             method="get"
             style="display: inline"
           >
-            <button type="submit">Edit</button>
+            <%- include('./partials/buttons/edit_btn_sm') %>
           </form>
           <form
             action="/users/<%= user._id %>"
             method="get"
             style="display: inline"
           >
-            <button type="submit" class="detail">Detail</button>
+            <%- include('./partials/buttons/detail_btn_sm') %>
           </form>
-        </td>
-        <td>
           <form
             action="/users/<%= user._id %>?_method=DELETE"
             method="POST"
             style="display: inline"
             onsubmit="return confirmDelete();"
           >
-            <button type="submit" class="delete">Delete</button>
+            <%- include('./partials/buttons/del_btn_sm') %>
           </form>
         </td>
       </tr>

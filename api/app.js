@@ -7,6 +7,7 @@ const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 // const { MongoClient, ObjectId } = require('mongodb');
 const dotenv = require('dotenv');
+const ejsLayouts = require('express-ejs-layouts');
 
 // 加載環境變量
 dotenv.config();
@@ -45,6 +46,10 @@ mongoose.connect(process.env.DB_URL, {
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
+// configure express-ejs-layouts
+app.use(ejsLayouts);
+app.set('layout', 'layouts/main'); // default layout
 
 app.use(logger('dev'));
 app.use(express.json());
