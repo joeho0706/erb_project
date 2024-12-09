@@ -101,16 +101,16 @@ app.use('/users', usersRouter);
 app.use('/auth', require('./routes/auth'));
 app.get('/login', (req, res) => {
   const messages = req.flash('error');
-  res.render('login', { messages });
+  res.render('login', { messages, layout: false });
 });
 
-app.get('/register', (req, res) => res.render('register'));
+app.get('/register', (req, res) => res.render('register', {layout: false}));
 
 app.get('/profile', (req, res) => {
   if (!req.isAuthenticated()) {
     return res.redirect('/login');
   }
-  res.render('profile', { user: req.user });
+  res.render('profile', { user: req.user, layout: false });
 });
 
 // Start the server
@@ -131,7 +131,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error', {layout: false});
 });
 
 module.exports = app;
