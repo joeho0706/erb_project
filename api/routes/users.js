@@ -1,13 +1,13 @@
 var express = require('express');
 var router = express.Router();
 const { validationResult } = require('express-validator');
-// const { ObjectId } = require('mongodb');
 const User = require('../models/user');
 const { userValidationRules } = require('../validators/user');
 const { faker } = require('@faker-js/faker');
 const path = require('path');
 const fs = require('fs');
 const upload = require('../config/multerConfig');
+const bcrypt = require('bcrypt');
 
 // /* GET users listing. */
 // router.get('/', function(req, res, next) {
@@ -17,7 +17,6 @@ const upload = require('../config/multerConfig');
 // 生成假數據
 router.get('/generate-fake-users', async (req, res) => {
   const count = parseInt(req.query.count) || 1; // 默認生成 1 個假用戶
-
   try {
     for (let i = 0; i < count; i++) {
       const fakeUser = new User({
@@ -29,7 +28,8 @@ router.get('/generate-fake-users', async (req, res) => {
         role: 'user',
       });
 
-      await fakeUser.save(); // 使用Mongoose保存假用戶
+      console.log(fakeUser.password), //!!! Log the generated password if needed for debugging !!!//
+        await fakeUser.save(); // 使用Mongoose保存假用戶
     }
     res.redirect('/users');
   } catch (error) {
@@ -79,27 +79,26 @@ router.post('/', async (req, res) => {
   //   return res.status(400).json({ errors: errors.array() });
   // }
 
-  const newUser = new User(req.body);
+  // Do not hash the password (storing in plaintext)
+  const newUser = new User({ ...req.body });
   try {
     await newUser.save(); // 使用Mongoose保存用戶
     res.redirect('/users');
     res.json({ message: 'User created successfully' });
   } catch (error) {
     if (error.code === 11000) {
-        res.status(400).json({ error: 'Username or email is already taken' });
+      res.status(400).json({ error: 'Username or email is already taken' });
     } else {
-        console.error('Error registering user:', error);
-        res.status(500).json({ error: 'Internal server error' });
+      console.error('Error registering user:', error);
+      res.status(500).json({ error: 'Internal server error' });
     }
   }
 });
-
 
 // 刪除所有用戶
 router.delete('/', async (req, res) => {
   try {
     await User.deleteMany({});
-    // res.redirect('/users');
     res.send('All users have been deleted.');
   } catch (error) {
     res.status(500).send(error);
@@ -130,50 +129,76 @@ router.get('/export', async (req, res) => {
 router.get('/:id/edit', async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
     res.render('edit', { user });
   } catch (error) {
-    res.status(400).send(error);
+    console.error(`Error fetching user for edit: ${error}`);
+    res.status(400).send('Error fetching user for edit');
   }
 });
 
 // 顯示用戶詳細信息
-router.get('/:id', async (req, res) => {
+router.put('/:id', async (req, res) => {
+  const { currentPassword, password, confirmPassword, name } = req.body;
+  const userId = req.params.id;
+
   try {
-    const user = await User.findById(req.params.id);
+    // Find the user by ID
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).send('User not found');
     }
-    res.render('detail', { user });
-  } catch (error) {
-    res.status(400).send(error);
-  }
-});
 
-// 更新用戶
-router.put('/:id', userValidationRules(), async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+    // Ensure currentPassword is provided
+    if (!currentPassword) {
+      return res.render('edit', {
+        user,
+        errorMessage: 'Current password is required', // Provide an error message
+      });
+    }
 
-  try {
-    await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    res.redirect('/users');
-  } catch (error) {
-    res.status(400).send(error);
-  }
-});
+    // Hash the inputted currentPassword before comparing with stored hash
+    // const hashedCurrentPassword = await bcrypt.hash(currentPassword, 10);
 
-// 刪除用戶
-router.delete('/:id', async (req, res) => {
-  try {
-    await User.findByIdAndDelete(req.params.id);
-    res.redirect('/users');
+    console.log('currentPassword ', currentPassword); //!!! for debugging !!!//
+    //console.log("hashedCurrentPassword ",hashedCurrentPassword); //!!! for debugging !!!//
+    console.log('user.password(DB password) ', user.password); //!!! for debugging !!!//
+    // Compare the hashed current password with the stored password (hashed)
+
+    const match = bcrypt.compareSync(currentPassword, user.password); // Compare hashed passwords
+
+    if (!match) {
+      return res.render('edit', {
+        user,
+        errorMessage: 'Current password is incorrect', // Provide an error message if passwords don't match
+      });
+    }
+
+    // Check if new password and confirm password match
+    if (password !== confirmPassword) {
+      return res.render('edit', {
+        user,
+        errorMessage: 'Passwords do not match', // Provide an error message if passwords don't match
+      });
+    }
+
+    // Update the user's name
+    user.name = name;
+
+    // If new password is provided, hash and update it
+    if (password && password.trim() !== '') {
+      // Hash the new password before saving
+      user.password = await bcrypt.hash(password, 10); // Hashing with 10 rounds of salt
+    }
+
+    // Save the updated user to the database
+    await user.save();
+    res.redirect('/users'); // Redirect to the user list or another page
   } catch (error) {
-    res.status(500).send(error);
+    console.error('Error updating user:', error);
+    res.status(500).send('An error occurred. Please try again.');
   }
 });
 

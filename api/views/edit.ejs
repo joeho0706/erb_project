@@ -1,21 +1,155 @@
 <%- include('layout') %>
-<link rel="stylesheet" type="text/css" href="../stylesheets/edit.css" />
-<h1>Edit User</h1>
-<% if (errors) { %>
-<ul>
-  <% errors.forEach(function(error) { %>
-  <li><%= error.msg %></li>
-  <% }); %>
-</ul>
-<% } %>
-<form action="/users/<%= user._id %>?_method=PUT" method="POST">
-  <input type="text" name="username" value="<%= user.username %>" required />
-  <input
-    type="password"
-    name="password"
-    value="<%= user.password %>"
-    required
-  />
-  <input type="email" name="email" value="<%= user.email %>" required />
-  <button type="submit">Update User</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit User Page</title>
+  <link rel="stylesheet" href="/stylesheets/layout.css">
+  <style>
+    /* Your existing CSS remains unchanged */
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+    input,
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      transition: border-color 0.3s ease;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .password-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .password-toggle {
+      cursor: pointer;
+      font-size: 18px;
+      margin-left: 10px;
+    }
+    .error-message {
+      color: #ff0000;
+      font-size: 14px;
+      margin-bottom: 15px;
+      background-color: #ffe6e6;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #ffcccc;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Edit User Page</h1>
+    <form action="/users/<%= user._id %>?_method=PUT" method="POST" id="edit-user-form">
+
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" value="<%= user.username %>" required disabled>
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" value="<%= user.email %>" required disabled>
+
+      <label for="googleId">Google ID</label>
+      <input type="text" id="googleId" name="googleId" value="<%= user.googleId %>" disabled class="immutable-field">
+
+      <label for="facebookId">Facebook ID</label>
+      <input type="text" id="facebookId" name="facebookId" value="<%= user.facebookId %>" disabled class="immutable-field">
+
+      <label for="thumbnail">Thumbnail</label>
+      <input type="text" id="thumbnail" name="thumbnail" value="<%= user.thumbnail %>" disabled class="immutable-field">
+
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" value="<%= user.name %>" required minlength="3" maxlength="50">
+
+      <!-- Current Password -->
+      <label for="currentPassword">Current Password</label>
+      <input type="password" id="currentPassword" name="currentPassword" required placeholder="Enter your current password">
+
+      <!-- New Password -->
+      <label for="password">New Password</label>
+      <input type="password" id="password" name="password" minlength="5" placeholder="Enter new password">
+
+      <!-- Confirm New Password -->
+      <label for="confirmPassword">Confirm New Password</label>
+      <input type="password" id="confirmPassword" name="confirmPassword" minlength="5" placeholder="Confirm new password">
+
+      <div class="password-container">
+        <span id="passwordHelp" class="error-message" style="display: none;">Passwords must match and be at least 5 characters.</span>
+        <span id="togglePassword" class="password-toggle" style="cursor: pointer; color: #007BFF;">👁️</span>
+      </div>
+
+      <% if (typeof errorMessage !== 'undefined') { %>
+        <div class="error-message"><%= errorMessage %></div>
+      <% } %>
+
+      <button type="submit">Save Changes</button>
+    </form>
+    <a class="back-link" href="/users">Back to User List</a>
+  </div>
+
+  <script>
+    // Password visibility toggle
+    document.getElementById('togglePassword').addEventListener('click', function () {
+      const passwordField = document.getElementById('password');
+      const confirmPasswordField = document.getElementById('confirmPassword');
+      const type = passwordField.type === 'password' ? 'text' : 'password';
+      passwordField.type = type;
+      confirmPasswordField.type = type;
+      this.textContent = this.textContent === '👁️' ? '🙈' : '👁️';
+    });
+
+    // Form validation
+    document.getElementById('edit-user-form').addEventListener('submit', function (event) {
+      const currentPassword = document.getElementById('currentPassword').value.trim();
+      const password = document.getElementById('password').value.trim();
+      const confirmPassword = document.getElementById('confirmPassword').value.trim();
+      const passwordError = document.getElementById('passwordHelp');
+
+      passwordError.style.display = 'none';
+
+      // Check if current password is filled
+      if (!currentPassword) {
+        passwordError.innerHTML = "Current password field must be filled out.";
+        passwordError.style.display = 'block';
+        event.preventDefault();
+        return;
+      }
+
+      // Check if both password fields match
+      if (password !== confirmPassword) {
+        passwordError.innerHTML = "Passwords do not match. Please try again.";
+        passwordError.style.display = 'block';
+        event.preventDefault();
+      }
+    });
+  </script>
+</body>
+</html>
