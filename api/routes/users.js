@@ -63,6 +63,7 @@ router.get('/new', (req, res) => {
 });
 
 // 添加新用戶
+
 router.post('/', async (req, res) => {
   // const errors = validationResult(req);
   // if (!errors.isEmpty()) {
@@ -74,9 +75,15 @@ router.post('/', async (req, res) => {
     await newUser.save(); // 使用Mongoose保存用戶
     res.redirect('/users');
   } catch (error) {
-    res.status(400).send(error);
+    if (error.code === 11000) {
+        res.status(400).json({ error: 'Username or email is already taken' });
+    } else {
+        console.error('Error registering user:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
   }
 });
+
 
 // 刪除所有用戶
 router.delete('/', async (req, res) => {
