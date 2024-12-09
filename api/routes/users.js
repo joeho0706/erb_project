@@ -80,11 +80,10 @@ router.post('/', async (req, res) => {
   // }
 
   // Do not hash the password (storing in plaintext)
-  const newUser = new User({ ...req.body });
+  const newUser = new User(req.body);
   try {
     await newUser.save(); // 使用Mongoose保存用戶
     res.redirect('/users');
-    res.json({ message: 'User created successfully' });
   } catch (error) {
     if (error.code === 11000) {
       res.status(400).json({ error: 'Username or email is already taken' });
