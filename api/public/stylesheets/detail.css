@@ -1,22 +1,30 @@
-p {
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+input {
   margin: 10px 0;
+  padding: 10px;
   font-size: 16px;
 }
 
-strong {
-  font-weight: bold;
-}
-
-a {
-  display: inline-block;
-  margin-top: 20px;
-  padding: 10px 20px;
+button {
   background-color: #4caf50; /* Green */
+  border: none;
   color: white;
+  padding: 8px;
+  text-align: center;
   text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+  cursor: pointer;
   border-radius: 5px;
 }
 
-a:hover {
+button:hover {
   background-color: #45a049;
 }
+
