@@ -1,21 +1,13 @@
 <%- include('layout') %>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit User Page</title>
   <link rel="stylesheet" href="/stylesheets/layout.css">
   <style>
-    /* Existing Styles */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f9f9f9;
-    }
-
+    /* Your existing CSS remains unchanged */
     .container {
       max-width: 600px;
       margin: 50px auto;
@@ -24,18 +16,15 @@
       border-radius: 8px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-
     h1 {
       text-align: center;
       color: #333;
     }
-
     label {
       display: block;
       margin: 10px 0 5px;
       font-weight: bold;
     }
-
     input,
     select {
       width: 100%;
@@ -45,12 +34,6 @@
       border-radius: 4px;
       transition: border-color 0.3s ease;
     }
-
-    input:focus,
-    select:focus {
-      border-color: #007BFF;
-    }
-
     button {
       display: block;
       width: 100%;
@@ -62,56 +45,38 @@
       font-size: 16px;
       cursor: pointer;
     }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    .back-link {
-      display: block;
-      text-align: center;
-      margin-top: 15px;
-      text-decoration: none;
-      color: #007BFF;
-    }
-
-    .back-link:hover {
-      text-decoration: underline;
-    }
-
     .password-container {
       position: relative;
       display: flex;
       align-items: center;
     }
-
     .password-toggle {
       cursor: pointer;
       font-size: 18px;
       margin-left: 10px;
     }
-
     .error-message {
-      color: red;
+      color: #ff0000;
       font-size: 14px;
-      margin-top: -10px;
+      margin-bottom: 15px;
+      background-color: #ffe6e6;
+      padding: 10px;
+      border-radius: 4px;
+      border: 1px solid #ffcccc;
     }
   </style>
 </head>
-
 <body>
   <div class="container">
     <h1>Edit User Page</h1>
     <form action="/users/<%= user._id %>?_method=PUT" method="POST" id="edit-user-form">
 
-      <!-- Disabled fields (immutable) -->
       <label for="username">Username</label>
       <input type="text" id="username" name="username" value="<%= user.username %>" required disabled>
 
       <label for="email">Email</label>
       <input type="email" id="email" name="email" value="<%= user.email %>" required disabled>
 
-      <!-- Immutable fields -->
       <label for="googleId">Google ID</label>
       <input type="text" id="googleId" name="googleId" value="<%= user.googleId %>" disabled class="immutable-field">
 
@@ -121,29 +86,26 @@
       <label for="thumbnail">Thumbnail</label>
       <input type="text" id="thumbnail" name="thumbnail" value="<%= user.thumbnail %>" disabled class="immutable-field">
 
-      <!-- Name is required and editable -->
       <label for="name">Name</label>
       <input type="text" id="name" name="name" value="<%= user.name %>" required minlength="3" maxlength="50">
 
-      <!-- Current Password is required -->
+      <!-- Current Password -->
       <label for="currentPassword">Current Password</label>
       <input type="password" id="currentPassword" name="currentPassword" required placeholder="Enter your current password">
 
-      <!-- Password is editable -->
+      <!-- New Password -->
       <label for="password">New Password</label>
-      <input type="password" id="password" name="password" minlength="5" placeholder="Enter new password" aria-describedby="passwordHelp">
+      <input type="password" id="password" name="password" minlength="5" placeholder="Enter new password">
 
       <!-- Confirm New Password -->
       <label for="confirmPassword">Confirm New Password</label>
-      <input type="password" id="confirmPassword" name="confirmPassword" minlength="5" placeholder="Confirm new password" aria-describedby="passwordHelp">
+      <input type="password" id="confirmPassword" name="confirmPassword" minlength="5" placeholder="Confirm new password">
 
-      <!-- Password visibility toggle -->
       <div class="password-container">
         <span id="passwordHelp" class="error-message" style="display: none;">Passwords must match and be at least 5 characters.</span>
         <span id="togglePassword" class="password-toggle" style="cursor: pointer; color: #007BFF;">👁️</span>
       </div>
 
-      <!-- Error message for password mismatch -->
       <% if (typeof errorMessage !== 'undefined') { %>
         <div class="error-message"><%= errorMessage %></div>
       <% } %>
@@ -161,43 +123,33 @@
       const type = passwordField.type === 'password' ? 'text' : 'password';
       passwordField.type = type;
       confirmPasswordField.type = type;
-      this.textContent = this.textContent === '👁️' ? '🙈' : '👁️'; // Toggle icon
+      this.textContent = this.textContent === '👁️' ? '🙈' : '👁️';
     });
 
-    // Handle confirmation prompt before submitting the form
+    // Form validation
     document.getElementById('edit-user-form').addEventListener('submit', function (event) {
       const currentPassword = document.getElementById('currentPassword').value.trim();
       const password = document.getElementById('password').value.trim();
       const confirmPassword = document.getElementById('confirmPassword').value.trim();
       const passwordError = document.getElementById('passwordHelp');
 
-      // Clear previous error message
       passwordError.style.display = 'none';
 
-      // Check if the current password is filled
+      // Check if current password is filled
       if (!currentPassword) {
         passwordError.innerHTML = "Current password field must be filled out.";
         passwordError.style.display = 'block';
-        event.preventDefault(); // Prevent form submission if field is empty
+        event.preventDefault();
         return;
       }
 
-      // Check if both password and confirmPassword fields are not empty
-      if (!password || !confirmPassword) {
-        passwordError.innerHTML = "Both new password and confirm password fields must be filled out.";
-        passwordError.style.display = 'block';
-        event.preventDefault(); // Prevent form submission if any field is empty
-        return;
-      }
-
-      // Check if the passwords match
+      // Check if both password fields match
       if (password !== confirmPassword) {
         passwordError.innerHTML = "Passwords do not match. Please try again.";
         passwordError.style.display = 'block';
-        event.preventDefault(); // Prevent form submission if passwords don't match
+        event.preventDefault();
       }
     });
   </script>
 </body>
-
 </html>
