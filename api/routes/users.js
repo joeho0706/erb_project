@@ -140,6 +140,19 @@ router.get('/:id/edit', async (req, res) => {
 });
 
 // 顯示用戶詳細信息
+router.get('/:id', async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+    res.render('detail', { user });
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+// 顯示用戶詳細信息
 router.put('/:id', async (req, res) => {
   const { currentPassword, password, confirmPassword, name } = req.body;
   const userId = req.params.id;
@@ -199,6 +212,16 @@ router.put('/:id', async (req, res) => {
   } catch (error) {
     console.error('Error updating user:', error);
     res.status(500).send('An error occurred. Please try again.');
+  }
+});
+
+// 刪除用戶
+router.delete('/:id', async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.redirect('/users');
+  } catch (error) {
+    res.status(500).send(error);
   }
 });
 
