@@ -1,8 +1,13 @@
 <%- include('layout.ejs')%>
 <link rel="stylesheet" type="text/css" href="/styles/detail.css" />
 <h1>User Details</h1>
+<p><strong>Role:</strong> <%= user.role %></p>
+<p><strong>Thumbnail:</strong><% = user.svg %></p>
 <p><strong>Username:</strong> <%= user.username %></p>
+<p><strong>Name:</strong> <%= user.name %></p>
 <p><strong>Email:</strong> <%= user.email %></p>
+<p><strong>Social Media Method:</strong> <%= user.socialMediaMethod %></p>
+<p><strong>Social Media ID:</strong> <%= user.socialMediaID %></p>
 <p>
   <strong>Created At:</strong> <%= new Date(user.createdAt).toLocaleString() %>
 </p>
