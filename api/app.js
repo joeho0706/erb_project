@@ -113,6 +113,15 @@ app.get('/profile', (req, res) => {
   res.render('profile', { user: req.user, layout: false });
 });
 
+app.post('/logout', (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect('/login'); // Redirect to login page after logout
+  });
+});
+
 // Start the server
 app.listen(() => {
   console.log(`Server is running on http://localhost:${PORT}`);

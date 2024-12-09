@@ -11,6 +11,9 @@
     <p>Welcome, <%= user.name %>!</p>
     <p>Email: <%= user.email %></p>
     <p>Username: <%= user.username %></p>
+    <form action="/logout" method="POST">
+      <button type="submit">Log Out</button>
+    </form>
   </div>
 </body>
 </html>

@@ -7,7 +7,7 @@ const { faker } = require('@faker-js/faker');
 const path = require('path');
 const fs = require('fs');
 const upload = require('../config/multerConfig');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 // /* GET users listing. */
 // router.get('/', function(req, res, next) {
