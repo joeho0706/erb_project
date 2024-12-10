@@ -102,12 +102,39 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Local login
-router.post('/login', passport.authenticate('local', {
-  successRedirect: '/profile',
-  failureRedirect: '/login',
-  failureFlash: true
-}));
+// // Local login 0
+// router.post('/login', passport.authenticate('local', {
+//   successRedirect: '/profile',
+//   failureRedirect: '/login',
+//   failureFlash: true
+// }));
+
+// Login route
+router.post('/login', (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      req.flash('error', info.message);
+      return res.redirect('/login');
+    }
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      // Redirect based on user role
+      if (user.role === 'admin') {
+        return res.redirect('/users');
+      } else {
+        return res.redirect('/profile');
+      }
+    });
+  })(req, res, next);
+});
+
+module.exports = router;
+
 
 // Google login
 router.get('/google', passport.authenticate('google', { scope: ['profile','email'],prompt:"select_account" }));
