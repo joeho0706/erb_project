@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema(
         message: 'Password must be at least 5 characters long, but got {VALUE}',
       },
       sparse: true,
+      required: function() { return this.loginMethod === 'local'; }, // Only required for local login
     },
     email: {
       type: String,
@@ -62,13 +63,29 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// 在保存使用者資料前,加密密碼
-userSchema.pre('save', async function (next) {
-  if (this.isModified('password') || this.isNew) {
-    this.password = await bcrypt.hash(this.password, 10);
+// // 在保存使用者資料前,加密密碼
+// userSchema.pre('save', async function (next) {
+//   if (this.isModified('password') || this.isNew) {
+//     this.password = await bcrypt.hash(this.password, 10);
+//   }
+//   next();
+// });
+
+
+// Pre-save hook to hash password
+userSchema.pre('save', async function(next) {
+  // Only hash the password if it is being modified and exists
+  if (this.isModified('password') && this.password) {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      this.password = await bcrypt.hash(this.password, salt);
+    } catch (error) {
+      return next(error);
+    }
   }
   next();
 });
+
 
 // 驗證密碼
 userSchema.methods.isValidPassword = async function (password) {

@@ -17,6 +17,7 @@ body {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     max-width: 430px;
     width: 100%;
+    text-align: center; /* Center text and images */
   }
   
   h1 {
@@ -25,6 +26,15 @@ body {
     margin-bottom: 20px;
   }
   
+  .profile-thumbnail {
+    width: 100px; /* Set a fixed width */
+    height: 100px; /* Set a fixed height */
+    border-radius: 50%; /* Make it circular */
+    object-fit: cover; /* Cover the entire area */
+    display: block; /* Make it a block element */
+    margin: 20px auto; /* Center the image */
+}
+
   form {
     display: flex;
     flex-direction: column;

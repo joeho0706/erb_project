@@ -31,12 +31,12 @@ module.exports = function(passport) {
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: '/auth/google/callback'
   }, async (token, tokenSecret, profile, done) => {
-    console.log("enter Google Strategy area");
+    console.log("Enter Google Strategy area");
     console.log(profile);
     try {
       let user = await User.findOne({socialMediaId: profile.id });
       if (!user) {
-        user = new User({ loginMethod: "Google",
+        user = new User({ loginMethod: "google",
                           socialMediaId: profile.id, 
                           username: profile.id,
                           name: profile.displayName,
@@ -61,7 +61,7 @@ module.exports = function(passport) {
     try {
       let user = await User.findOne({socialMediaId: profile.id });
       if (!user) {
-        user = new User({ loginMethod: "Facebook",
+        user = new User({ loginMethod: "facebook",
                           socialMediaId: profile.id,
                           username: profile.id, 
                           name: profile.displayName,
