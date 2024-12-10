@@ -199,12 +199,10 @@ router.put('/:id', async (req, res) => {
     // Update the user's name
     user.name = name;
 
-    // If new password is provided, hash and update it
-    if (password && password.trim() !== '') {
-      // Hash the new password before saving
-      user.password = await bcrypt.hash(password, 10); // Hashing with 10 rounds of salt
-    }
+    password.trim();
+    user.password=password;
 
+ 
     // Save the updated user to the database
     await user.save();
     res.redirect('/users'); // Redirect to the user list or another page
