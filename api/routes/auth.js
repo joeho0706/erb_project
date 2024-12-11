@@ -46,61 +46,69 @@ router.get('/register', (req, res) => {
 //   }
 // });
 
-// //Handle registration 1
-// router.post('/register', async (req, res) => { 
-//   try {
-//     const { email, username, password, confirmPassword, name } = req.body; 
-//     // Validate that email and other fields are provided 
-//     if (!email || !username || !password || !name) {
-//       return res.status(400).send('All fields are required'); 
-//     } 
-//     // Validate password and confirm password match 
-//     if (password !== confirmPassword) { 
-//       return res.render('register', { email, username, name, layout: false}); 
-//     } 
-//     // Validate that email is existed
-//     const existingUser = await User.findOne({ email });
-//     if (existingUser) {
-//       return res.render('register', { email, username, name, error: 'Email already in use.', layout: false });
-//     }
-//     const loginMethod = "local"; 
-//     const newUser = new User({ loginMethod, email, username, name, password }); 
-//     console.log(newUser);
-//     await newUser.save(); 
-//     console.log('User registered successfully, redirecting to login...');
-//     res.redirect('/login'); 
-//   } catch (err) { 
-//     console.error(err); 
-//     res.render('register', { 
-//       email: req.body.email, 
-//       username: req.body.username, 
-//       name: req.body.name,  
-//       error: 'Registration failed. Please try again.', 
-//       layout: false });
-//   } });
-
-
-
-
-
-// Handle registration 0
-router.post('/register', async (req, res) => {
+//Handle registration 1
+router.post('/register', async (req, res) => { 
   try {
-    const { email, username, password, name } = req.body;
-
-    // Validate that email and other fields are provided
+    const { email, username, password, confirmPassword, name } = req.body; 
+    // Validate that email and other fields are provided 
     if (!email || !username || !password || !name) {
-      return res.status(400).send('All fields are required');
+      return res.status(400).render('register', { 
+        email: req.body.email || '', 
+        username: req.body.username || '', 
+        name: req.body.name || '', 
+        error: 'All fields are required', 
+        layout: false 
+      });
+    } 
+    // Validate password and confirm password match 1
+    if (password !== confirmPassword) {
+      return res.status(400).render('register', { email, username, name, error: 'Passwords do not match', layout: false });
     }
-    const loginMethod="local";
-    const newUser = new User({ loginMethod, email, username, password, name });
+    // Check if the email already exists 1
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).render('register', { email, username, name, error: 'Email already in use', layout: false });
+    }
+
+    const newUser = new User({ loginMethod: "local", email, username, name, password }); 
+    console.log(newUser);
     await newUser.save(); 
-    res.redirect('/login');
+    console.log('User registered successfully, redirecting to login...');
+    return res.redirect('/login'); // Redirect to login page
   } catch (err) {
     console.error(err);
-    res.render("register", {layout: false});
+    return res.status(500).render('register', { 
+      email: req.body.email || '', 
+      username: req.body.username || '', 
+      name: req.body.name || '',  
+      error: 'Registration failed. Please try again.', 
+      layout: false 
+    });
   }
 });
+
+
+
+
+
+// // Handle registration 0
+// router.post('/register', async (req, res) => {
+//   try {
+//     const { email, username, password, name } = req.body;
+
+//     // Validate that email and other fields are provided
+//     if (!email || !username || !password || !name) {
+//       return res.status(400).send('All fields are required');
+//     }
+//     const loginMethod="local";
+//     const newUser = new User({ loginMethod, email, username, password, name });
+//     await newUser.save(); 
+//     res.redirect('/login');
+//   } catch (err) {
+//     console.error(err);
+//     res.render("register", {layout: false});
+//   }
+// });
 
 // // Local login 0
 // router.post('/login', passport.authenticate('local', {
@@ -146,7 +154,7 @@ router.get('/google/callback', passport.authenticate('google', {
 }));
 
 // Facebook login
-router.get('/facebook', passport.authenticate('facebook', {scope:["email" /*,"photos"*/]}));
+router.get('/facebook', passport.authenticate('facebook', {scope:["email" /*,"photos"*/],prompt:"select_account"}));
 
 // Facebook callback
 router.get('/facebook/callback', passport.authenticate('facebook',  {
