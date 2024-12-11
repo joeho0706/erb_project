@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 // const { MongoClient, ObjectId } = require('mongodb');
 const dotenv = require('dotenv');
 const ejsLayouts = require('express-ejs-layouts');
+const User = require('../api/models/user');
 
 // Load environment variables from .env
 dotenv.config();
@@ -104,7 +105,7 @@ app.get('/login', (req, res) => {
   res.render('login', { messages, layout: false });
 });
 
-app.get('/register', (req, res) => res.render('register', {layout: false}));
+app.get('/register', (req, res) => res.render('register', { layout: false }));
 
 app.get('/profile', (req, res) => {
   if (!req.isAuthenticated()) {
@@ -114,6 +115,9 @@ app.get('/profile', (req, res) => {
 });
 
 app.post('/logout', (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.redirect('/login');
+  }
   req.logout((err) => {
     if (err) {
       return next(err);
@@ -122,9 +126,31 @@ app.post('/logout', (req, res) => {
   });
 });
 
+// Middleware to check and create admin
+const checkAdminUser = async () => {
+  const adminUser = await User.findOne({
+    username: process.env.ADMIN_USERNAME,
+  });
+  if (!adminUser) {
+    const newAdmin = new User({
+      username: process.env.ADMIN_USERNAME,
+      password: process.env.ADMIN_PASSWORD, // Make sure to hash passwords in production
+      email: process.env.ADMIN_EMAIL,
+      name: process.env.ADMIN_USERNAME,
+      role: 'admin',
+      loginMethod: 'local',
+    });
+    await newAdmin.save();
+    console.log('Admin user created');
+  } else {
+    console.log('Admin user already exists');
+  }
+};
+
 // Start the server
-app.listen(() => {
+app.listen(async () => {
   console.log(`Server is running on http://localhost:${PORT}`);
+  await checkAdminUser();
 });
 
 // catch 404 and forward to error handler
@@ -140,7 +166,7 @@ app.use(function (err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error', {layout: false});
+  res.render('error', { layout: false });
 });
 
 module.exports = app;

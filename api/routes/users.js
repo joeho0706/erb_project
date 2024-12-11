@@ -9,13 +9,21 @@ const fs = require('fs');
 const upload = require('../config/multerConfig');
 const bcrypt = require('bcryptjs');
 
+// Middleware to check if user is authenticated
+function isAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  res.redirect('/login');
+}
+
 // /* GET users listing. */
 // router.get('/', function(req, res, next) {
 //   res.send('respond with a resource');
 // });
 
 // 生成假數據
-router.get('/generate-fake-users', async (req, res) => {
+router.get('/generate-fake-users', isAuthenticated, async (req, res) => {
   const count = parseInt(req.query.count) || 1; // 默認生成 1 個假用戶
   try {
     for (let i = 0; i < count; i++) {
@@ -39,7 +47,7 @@ router.get('/generate-fake-users', async (req, res) => {
 });
 
 // 顯示或搜索用戶，支持分頁、限制返回用戶數量和單字段排序
-router.get('/', async (req, res) => {
+router.get('/', isAuthenticated, async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10; // 默認每頁顯示10個用戶
   const sort = req.query.sort || 'createdAt'; // 默認按創建時間排序
@@ -67,13 +75,13 @@ router.get('/', async (req, res) => {
 });
 
 // 顯示添加用戶表單
-router.get('/new', (req, res) => {
+router.get('/new', isAuthenticated, (req, res) => {
   res.render('new');
 });
 
 // 添加新用戶
 
-router.post('/', async (req, res) => {
+router.post('/', isAuthenticated, async (req, res) => {
   // const errors = validationResult(req);
   // if (!errors.isEmpty()) {
   //   return res.status(400).json({ errors: errors.array() });
@@ -95,7 +103,7 @@ router.post('/', async (req, res) => {
 });
 
 // 刪除所有用戶
-router.delete('/', async (req, res) => {
+router.delete('/', isAuthenticated, async (req, res) => {
   try {
     await User.deleteMany({});
     res.send('All users have been deleted.');
@@ -105,7 +113,7 @@ router.delete('/', async (req, res) => {
 });
 
 // 導出用戶數據為 JSON
-router.get('/export', async (req, res) => {
+router.get('/export', isAuthenticated, async (req, res) => {
   try {
     const users = await User.find().exec();
     const jsonUsers = JSON.stringify(users, null, 2);
@@ -125,7 +133,7 @@ router.get('/export', async (req, res) => {
 });
 
 // 顯示編輯用戶表單
-router.get('/:id/edit', async (req, res) => {
+router.get('/:id/edit', isAuthenticated, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -139,7 +147,7 @@ router.get('/:id/edit', async (req, res) => {
 });
 
 // 顯示用戶詳細信息
-router.get('/:id', async (req, res) => {
+router.get('/:id', isAuthenticated, async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -152,7 +160,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // 顯示用戶詳細信息
-router.put('/:id', async (req, res) => {
+router.put('/:id', isAuthenticated, async (req, res) => {
   const { currentPassword, password, confirmPassword, name } = req.body;
   const userId = req.params.id;
 
@@ -200,9 +208,8 @@ router.put('/:id', async (req, res) => {
     user.name = name;
 
     password.trim();
-    user.password=password;
+    user.password = password;
 
- 
     // Save the updated user to the database
     await user.save();
     res.redirect('/users'); // Redirect to the user list or another page
@@ -213,7 +220,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // 刪除用戶
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', isAuthenticated, async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
     res.redirect('/users');

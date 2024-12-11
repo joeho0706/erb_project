@@ -12,13 +12,17 @@
   <div class="search-form-container">
     <form action="/users" method="get">
       <select name="field">
+        <%#
         <option value="_id">ID</option>
+        %>
         <option value="username">Username</option>
         <option value="email">Email</option>
         <option value="role">Role</option>
         <option value="loginMethod">Login Method</option>
+        <%#
         <option value="createdAt">Created At</option>
         <option value="updatedAt">Updated At</option>
+        %>
       </select>
       <input type="text" name="query" placeholder="Search..." />
       <button type="submit">Search</button>
